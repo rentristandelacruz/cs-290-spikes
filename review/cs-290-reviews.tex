@@ -3,7 +3,7 @@
 
 \title
 {
-   CS 290 Paper Reviews
+   CS 290 Paper Commentaries
 }
 
 \author
@@ -28,32 +28,83 @@
 
 \emph{Computing with Spikes} \cite{maass-2002-comp-spike} gives a quick overview of the idea behind 
 computing models based on \emph{spiking neurons} and the (then) current research that the author
-(Wolfgang Maass) and his colleagues were conducting.
+Wolfgang Maass and his colleagues were conducting. A significant portion of the paper is dedicated
+to describing the mechanisms of a spiking neuron.
 
+The field that studies spiking neuron models (or spiking neural networks) is in the intersection of 
+the field of neuroscience and the field of theoretical computer science. Unlike abstract models of 
+computation like Turing  machines and counter machines in theoretical computer science, spiking 
+neuron models are significantly more complex since they are used to model and study the
+computational process of the nervous system. Spiking neuron models should be abstract enough for 
+them to be used as models of computation that can solve abstract problems (in theoretical computer
+science) but they should be detailed enough so that they can be used to explain phenomena in the
+nervous system (in neuroscience).
 
-The field that studies spiking neurons models is in the intersection of complexity theory and
-computational learning theory.
+Artificial neural networks are computing models that are `inspired' biological neural network but the 
+activation mechanism (using real functions like sigmoid and trigonometric functions) of the neuron 
+in these models does not represent how activation occurs in a biological neuron. The activation 
+mechanism in a spiking neuron model more closely represents the activation mechanism of a biological 
+neuron. Aside from the difference in activation mechanism, the organization of an artificial neural 
+network is also different to the organization of a spiking neural network.  
 
-Theoretical ideas regarding cognition and learning
-organization of information processing in the human brain
+Maass et al.'s research involves determining the computational function of \emph{neural 
+microcircuits}. In a spiking neuron model, these microcircuits are model using spiking neurons. The 
+research asks how exactly does a spiking neuron work. The research involves studying actual
+biological neurons in order to observe how they produce and process spikes. Other aspects of their 
+research involve the study of how the spiking neurons are organized (into networks), how memory are
+stored in the networks, and how learning is done by the networks. 
 
-Questions
-Computational function of neural microcircuit
-principles by which learning and memory are organized
-organization principles by which millions of neural microcircuit can communicate and collaborate 
-in our brains
+A large part of the paper describes the spiking neuron and gives a general idea behind the spiking 
+mechanism. The neuron has three main parts: the \emph{soma}, the \emph{dendritic tree}, and the
+\emph{axonal tree}. The soma is the body of the neuron that produces the signal called 
+\emph{spikes}. The dendritic tree is the `input' region of the neuron where it receives signals from 
+other neurons. The axonal tree is the `output' region of the neuron where it sends out signals to 
+other neurons. A part of the axonal tree (output region) of one neuron can be `connected' to a part 
+of the dendritic tree (input region) of another neuron. This `connection' or interface between a 
+neuron's axonal tree and another neuron's dendritic tree is called a \emph{synapse}.  
 
-temporal dynamics of a neuron
-time instead of frequency
-neuron, soma, dendritic trees, axonal trees, synapses,
-neurotransmitter, channels, 
-spike- sudden voltage increase, action potential 
-excitatory post-synaptic potentials
-inhibitory post-synaptic potentials
+A neuron has a \emph{membrane potential}, a voltage value based on the difference between the charge
+inside and the charge outside the membrane of the neuron. A neuron has a resting membrane potential 
+which is about $-70$ millivolts. The `spike' in a spiking neuron model refers to an \emph{action 
+potential} in a neuron. An action potential is a sudden increase (around $40$ millivolts) and then a 
+sudden decrease of the neuron's membrane potential (happens in less than $3$ milliseconds). The term 
+`spike' refers to that even of the membrane potential spiking. 
 
-no synchronization, mixed digital and analog 
-synapse as learning component
+When a neuron receives a certain combination of inputs (spikes from other neurons received by the 
+dendritic tree), it will produce a spike. There is threshold mechanism in a neuron. If the 
+`combination' of input spikes passes a certain threshold, the neuron will spike. The amplitude of 
+the spike does not change for a neuron. The input spikes can dictate if the neuron will spike or not 
+but not how `large' the spike is. A series of input spikes can, however, dictate the timing (i.e.
+frequency) in which the neuron spikes.
 
+When a neuron spikes, the spike travels along the axon then reaches the axon terminals. The axon
+terminals can be connected to dendrites of other neurons. The synapse, that connects the axon 
+terminal to dendrite of another neuron, is responsible from `processing' the spike and then passing 
+a `processed' spike to the next neuron. The synapse has an internal state/configuration. This state
+is affected by the spikes it receives. In a sense, this is a form of memory. This state affects how
+the synapse processed incoming spikes.   
+
+In the biological neuron, the spiking event is a result of a combination of electrochemical 
+activities that involve the neuron membrane, voltage-gate ion channels, potassium and sodium ions, 
+etc. The activities in a synapse involve neurotransmitters, neurotransmitter transporters and
+receptors, etc. In the spiking neuron models, these electrochemical activities are abstracted and
+simplified in order to have manageable models of computation but they are still somewhat faithful to 
+their biological analogues (at least much more faithful compared to artificial neural network 
+models). 
+
+A spiking neuron can only produce a spike, a single type of signal. A neuron can not produce a 
+`large' spike or `small' spike. All spikes produced are identical. Information in spiking neuron
+models are encoded by spiking patterns (in time) produced by a neuron. This pattern in known as
+a \emph{spike train}. For example, a spike can be represented by `$1$' and no spike represented by
+`$0$'. A spiking neuron's activities (spiking or resting) can be represented by a string (the spike
+train) over the binary alphabet $\{0,1\}$. This string is a pattern in time instead of being a
+pattern in space. One can only observe the spike train by looking at the activities of a neuron for
+a certain period of time.
+
+In summary, a spiking neuron model is  a model of computation based on the spiking mechanism of a
+biological neuron. It is much more complex than other models of computation because it also has the
+role of modelling neural phenomena. Spiking neural network s are much more similar to biological 
+neural network unlike artificial neural networks.
 
 % ================================================================================================= %
 

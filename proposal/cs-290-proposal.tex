@@ -8,7 +8,7 @@
 
 \title
 {
-   Application of Formal Framework to Two Spiking Neural P System Models 
+   Application of Formal Framework to Spiking Neural P System Variants: A Proposal
 }
 
 \author
@@ -31,9 +31,36 @@
 
 \section{Introduction}
 
-\emph{Membrane computing}
+\emph{Membrane computing} is a field of computer science that studies models of computation known as
+\emph{P systems}. \emph{P systems} refer to a family of models of computation that are inspired by 
+different biological processes. P systems use biological concepts like cells, cell membranes, neurons, 
+tissues, etc. Rules (computation operations) in P systems are inspired by biological processes like
+chemical reactions in cells, ion transport between regions divided by membranes, membrane creation,
+division and dissolution, spiking of neurons, neurogenesis, and synaptogenesis.  
 
-\cite{verlan-2020-ff}
+There is no single formal definition for the term `P system' but there are certain characteristics
+that apply to most P systems. Most P systems use multiset of symbols as computing elements. One can
+think of these symbols as molecules or ions. The multiset of symbols are compartmentalized into 
+regions and these regions are defined by membranes that enclose them. i.e. Region 1 is the space
+enclosed by membrane 1. This is the reason why the field is known as `membrane' computing. Regions
+can be connected to each other. For example, in cell-like P system, membranes in the cell can be
+nested. If there are two membranes in a cell, membrane $0$ and membrane $1$, and membrane $1$ is 
+inside membrane $0$ then the region enclosed by membrane $0$ that is outside mebrane $1$ is 
+`connected' to the region enclosed by membrane $1$. In tissue-like P system, membranes represent 
+cells and a cell enclosed one region. Cells (and hence regions) are connected to each other via 
+channels. Tissue P systems form networks of cells. In general, the \emph{configuration} of a P 
+system refers to the network of cells/membranes with each cell/membrane containing a multiset of 
+objects (the multiset can be empty). In some P systems, a cell/membrane has an internal state/status
+that is different from its content (multiset of symbols). For example, in some cell-like P system, 
+a membrane has a state known as \emph{polarity} or \emph{charge} which can either be negative, 
+positive, or neutral.
+
+The diversity of P systems primarily comes from diverse types of rules used by the systems.
+
+\cite{freund-2007-ff-stat}
+\cite{freund-2013-ff-dyn}
+\cite{verlan-2014-ff-use}
+\cite{verlan-2020-ff-snp}
 
 hello world
 
