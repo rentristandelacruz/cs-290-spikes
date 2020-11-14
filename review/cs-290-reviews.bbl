@@ -1,5 +1,18 @@
 \begin{thebibliography}{1}
 
+\bibitem{ghosh-dastidar-2009-snn}
+Samanwoy Ghosh-Dastidar and Hojjat Adeli.
+\newblock Third generation neural networks: Spiking neural networks.
+\newblock In Wen Yu and Edgar~N. Sanchez, editors, {\em Advances in
+  Computational Intelligence}, pages 167--178, Berlin, Heidelberg, 2009.
+  Springer Berlin Heidelberg.
+
+\bibitem{maass-1997-third}
+Wolfgang Maass.
+\newblock Networks of spiking neurons: The third generation of neural network
+  models.
+\newblock {\em Neural Networks}, 10(9):1659 -- 1671, 1997.
+
 \bibitem{maass-2002-comp-spike}
 Wolfgang Maass.
 \newblock {Computing with Spikes}.
