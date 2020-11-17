@@ -3,44 +3,44 @@ Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
 The top-level auxiliary file: cs-290-reviews.aux
 The style file: plain.bst
 Database file #1: cs-290-reviews.bib
-You've used 3 entries,
+You've used 4 entries,
             2118 wiz_defined-function locations,
-            517 strings with 4499 characters,
-and the built_in function-call counts, 1053 in all, are:
-= -- 107
-> -- 35
+            525 strings with 4641 characters,
+and the built_in function-call counts, 1419 in all, are:
+= -- 144
+> -- 53
 < -- 1
-+ -- 13
-- -- 10
-* -- 66
-:= -- 175
-add.period$ -- 10
-call.type$ -- 3
-change.case$ -- 13
++ -- 20
+- -- 16
+* -- 99
+:= -- 236
+add.period$ -- 13
+call.type$ -- 4
+change.case$ -- 19
 chr.to.int$ -- 0
-cite$ -- 3
-duplicate$ -- 44
-empty$ -- 89
-format.name$ -- 10
-if$ -- 228
+cite$ -- 4
+duplicate$ -- 55
+empty$ -- 116
+format.name$ -- 16
+if$ -- 301
 int.to.chr$ -- 0
-int.to.str$ -- 3
-missing$ -- 3
-newline$ -- 18
-num.names$ -- 8
-pop$ -- 13
+int.to.str$ -- 4
+missing$ -- 4
+newline$ -- 23
+num.names$ -- 10
+pop$ -- 17
 preamble$ -- 1
-purify$ -- 10
+purify$ -- 15
 quote$ -- 0
-skip$ -- 34
+skip$ -- 41
 stack$ -- 0
-substring$ -- 80
-swap$ -- 12
+substring$ -- 110
+swap$ -- 13
 text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 12
+type$ -- 16
 warning$ -- 0
-while$ -- 11
-width$ -- 4
-write$ -- 36
+while$ -- 15
+width$ -- 5
+write$ -- 47

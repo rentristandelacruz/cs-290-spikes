@@ -1,9 +1,11 @@
 % ================================================================================================= %
 \documentclass[12pt,A4]{article}
 
+\usepackage{amssymb}
+
 \title
 {
-   CS 290 Paper Commentaries
+   CS 290 Paper Summaries and Commentary
 }
 
 \author
@@ -233,11 +235,146 @@ disproportionate change in the output spike train.
 
 \section*{Network of Spiking Neurons: Third Generation Neural Network Models}
 
-\cite{maass-1997-third}
+\emph{Network of Spiking Neurons: Third Generation Neural Network Models} \cite{maass-1997-third}
+compares the computational power of a particular spiking neural network model with first and second
+generation neural networks. Specifically, \cite{maass-1997-third} compared spiking neural networks
+with neural networks that use McCulloch-Pitts/threshold gates (first generation) and neural 
+networks that use sigmoidal gates (second generation).
+
+The spiking neural network model used in the paper was defined formally. The spiking neural network
+model was introduced by the author in previous works. In \cite{maass-1997-third}, a spiking neural
+network is composed of a set $V$ of spiking neurons. The set $E \in V \times V$ is the set of 
+synapses that connect neurons together. Each synapse has an associated weight. The weight of the
+synapse that connects neuron $u$ to neuron $v$ is a non-negative real number denoted as $w_{u,v}$.
+At any given time $t$, some neuron $v$ will have an associated \emph{potential} denoted as $P_v(t)$.
+Aside from a weight, a synapse also has an associated \emph{response function $\varepsilon_{u,v}$}.
+If neuron $u$ fires at time $s$, then at time $t$ the value $\varepsilon_{u,v}(t-s)$ computed using
+the response function is a factor that contributes to the value of the neuron $v$'s potential 
+$P_v(t)$. Specifically, the term $w_{u,v} \cdot \varepsilon_{u,v}(t-s)$ contributes to the potential
+$P_v(t)$. i.e.. $P_v(t) = \sum_{u:(u,v)\in E}\Big(\sum_{s} w_{u,v}\cdot \varepsilon_{u,v}(t-s)\Big)$. 
+Neuron $v$ also has an associated \emph{thresholding function $\Theta_v$}. At time $t$, the
+threshold at neuron $v$ is the value $\Theta_v(t-t')$ where $t'$ is the last time neuron $v$ fired.
+At time $t$, neuron $v$ fires if its potential $P_v(t)$ is above the threshold $\Theta_v(t-t')$.
+
+Two types, \emph{Type A} and \emph{Type B}, of spiking neural network were compared to threshold 
+gates neural network and sigmoidal gates neural networks. \emph{Type A} spiking neural networks use
+piecewise constant (`step') functions for both the response and thresholding functions. 
+\emph{Type B} spiking neural networks use continuous piecewise linear functions for both the
+response and thresholding functions.
+
+Threshold gates neural networks can be used to compute boolean functions. Since type $A$ spiking
+neural networks are very similar to threshold gates neural networks then one can see that
+a threshold gates neural network that computes a particular boolean function can easily be converted 
+to a type $A$ spiking neural network that computes the same function. This means that in terms of
+boolean function computation, type $A$ spiking neural networks is at least as powerful as threshold
+gates neural network.
+
+The paper also show a stronger result that states that type $A$ spiking neural networks are more
+`computationally powerful' than first and second generation neural networks of the same size when it
+comes to computing boolean functions. A more specific statement of these result is that there are
+boolean functions whose spiking neural networks (the networks that compute the functions) are 
+smaller (in terms of the number of neurons) than smallest first and second generation networks that
+compute the same functions. i
+
+An instance of these boolean function is the \emph{coincidence-detection} function $CD_n$. 
+$CD_n$ takes $2n$ boolean variables: $x_1,...,x_n,y_1,...,y_n$. $CD_n(x_1,...,x_n,$ $y_1,...,y_n) = 1$
+if there is at least one pair $(x_i,y_i)$ such that $x_i = y_i = 1$. Otherwise, $CD_n(x_1,...,x_n,
+y_1,...,y_n) = 0$. Excluding input neurons, the paper showed that threshold gates neural network 
+need at at least $n/log(n+1)$ neurons while sigmoidal neural networks with piecewise polynomial 
+activation function needs $\Omega(n^{1/2})$ neurons to compute the function $CD_n$. On the other
+hand, with proper time encoding, a single spiking neuron can compute $CD_n$.
+
+There are similar results for functions that take vectors of non-negative real numbers as input and
+have boolean output. i.e. Functions of the form: $F: (\mathbb{R}^+)^n \rightarrow \{0,1\}$. There
+are functions of that form that can be computed by smaller spiking neural networks that are
+significantly smaller than the smallest first and second generation networks that can compute the
+same functions. 
 
 % ================================================================================================= %
 
-\section*{NEXT}
+\section*{Spike-based Strategies for Rapid Processing}
+
+\emph{Spike-based Strategies for Rapid Processing} \cite{thorpe-2001-spike} discusses different
+spiked-based information coding as alternative to the de facto standard rate-based information 
+coding.
+
+Rate-based coding (or rate coding for short) is the idea that information is conveyed by the rate of
+firing of a nerve cell. For example, in the human visual system, information from the retina is 
+eventually transmitted to the visual cortex. Different visual stimuli will change the firing rates
+of neurons in the visual cortex. The paper states that (at the time of writing) neurophysiologists 
+often assume that all useful information can be summarized by plots of neuron firing rate as a 
+function of time.
+
+There have been experiments that strongly suggest that there are situations where rate coding seems
+to be insufficient for tasks. For example, there are visual processing tasks like image recognition
+that can be done quickly and so they require rapid processing. Some visual tasks (e.g. reacting to 
+visual stimuli) can be done in 100 to 150 milliseconds. If one combines this information with the 
+observation that neurons rarely fire above 100 Hz and the fact that there are around 10 layers of
+neurons between the eye's photoreceptor and neurons in the visual cortex, then one can see that 
+the neurons in those ten layers can fire at most once. i.e. At the rate of 100 Hz, the average
+firing time of a neuron is 10 ms. Given the 10 layers of neurons from photoreceptor to a neuron
+in the visual cortex, a spike that travels that path will need at least 100ms. This means neurons
+in those 10 layers only has two possible rates: 0 spikes per unit of time or 1 spike per unit of 
+time. Those neurons can only process and communicate 1 bit of information when using rate coding.
+Other sensory pathways require an even faster processing. Bats, for example, can process auditory 
+stimuli in 8ms. Experiments that demonstrate the need for rapid processing  suggest that rate coding 
+does not support the required bandwidth of the input (visual/auditory stimuli).
+
+The paper \cite{thorpe-2001-spike} discusses some spike-based coding that can be used as alternative
+to rate coding. The paper looks at a group of $n$ neurons and measure the amount of information they
+can transmit using the different spike-based coding. \emph{Count coding} simply counts the number
+of spikes sent by the $n$ neurons. If there are $n$ neurons, then one can receive $0$ to $n$ spikes.
+There are $n+1$ possible values that those $n$ neurons can communicate. This results in the count 
+coding (for $n$ neurons) having a bandwidth of $log_2(n+1)$ bits. \emph{Binary coding} simply looks
+at the output (spike or no spike) of the $n$ neurons. Given some ordering, one can look at the
+sequence of neuron outputs as a bit string of length $n$. This means binary coding (for $n$ 
+neurons) has the bandwidth of $n$ bits. \emph{Timing coding} looks at the arrival time of the 
+spikes from $n$ neurons. In timing coding, if one is observing $t$ time intervals, then the arrival
+time of the spike can be in any of those $t$ time intervals. The arrival time of the spike can
+specify one of $t$ values which means a single neuron can transmit $log_2(t)$ bits. Given $n$ 
+neurons, the bandwidth of timing coding is $n \cdot log_2(t)$ where $t$ is the number of time 
+intervals being observed. \emph{Rank order coding} looks at the arrival time of spikes from $n$
+neurons and rank the neurons in terms of the spike arrival time. There are $n!$ possible ranking
+which means rank order coding has one of the highest bandwidth which is $log_2(n!)$ bits.
+
+% ================================================================================================= %
+
+\section*{Commentary on Spiking Neural Networks}
+
+Spiking neural networks bring the concept of \emph{pattern/information in time} (back) to neural
+computing. There are patterns that are inherently patterns in time. Time series data, music or 
+audio, and even texts are patterns in time because they contain information ordered in time.
+Since first and second generation neural networks do not encode information in time, time-based
+patterns are processed by these networks by looking at them as patterns in space. For example, 
+neural networks that process audio usually represent audio using its spectrogram. A spectrogram is
+a two-dimensional image that visualizes the spectrum of frequencies of the audio/signal. One can 
+see that one of the first steps taken to process audio (pattern in time) is to transform it from
+the time domain to frequency domain. One dimension of the spectrogram specifies time while the other
+dimension specifies the set of frequencies available. Even though a spectrogram still has a time
+dimension, neural networks that process as 2D images taking the whole spectrogram as input in
+a single step. In spiking neural networks, patterns in time can be fed to the network as is since 
+the network can `stream' these patterns instead of taking the entire pattern once as a pattern in
+space. Streaming patterns in time increases the time for the network to take the input but it can
+eliminate of other steps like preprocessing (i.e. converting audio to spectrogram) and more 
+compact networks can be created (since the pattern is streamed and not taken all at once). 
+
+We can see in \cite{thorpe-2001-spike} that the type of coding scheme used to encoded information
+is important in order to maximize information bandwidth that a group of neurons can transmit. This 
+idea is applicable for both networks that process time-based patterns and networks that process
+space-based patterns. Count coding and binary coding both encode information in space but binary coding
+produces better bandwidth. Timing coding and rank order coding both encode information in space and
+in time but rank order coding produces a significantly better bandwidth.
+
+There is no single spiking neural network model. There are different spiking neural network models.
+For example, the spiking neural network model described in \cite{maass-1997-third} is different from
+the model described in \cite{ghosh-dastidar-2009-snn}. Different spiking neural network models 
+can have different ways of coding information because their spiking neuron mechanisms can be 
+different from each other. The spiking neuron mechanism will dictate what kind of coding can be 
+used in the model. i.e. Some spiking neuron mechanisms can only process specific types of coding.
+This means that when you are trying to use a spiking neural network to perform some computation 
+you either already have a type of coding (for the input/output of your computation) in mind and you 
+need to select a spiking neural network model that can use that type of coding or you can select
+a spiking neural network model and work with the types of coding available in that model. 
 
 % ================================================================================================= %
 
