@@ -1,7 +1,12 @@
 \documentclass[a4paper]{article}
 
-\usepackage{geometry} % for margins
-\usepackage[hidelinks]{hyperref} % for clickabl and hidden reference links
+\usepackage{geometry}            % for margins
+\usepackage{amsthm}              % for theorems, definition, etc.
+\usepackage{amssymb}             % for mathcal, mathbb, mathfrak
+\usepackage{amsmath}             % for \text
+\usepackage{mathrsfs}            % for \mathscr
+\usepackage{multicol}            % for \multicols
+\usepackage[hidelinks]{hyperref} % for clickable and hidden reference links
 
 \geometry
 {
@@ -10,13 +15,19 @@
    top    = 25mm,
    bottom = 25mm,
 }
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\newcommand{\ra}{\rightarrow}
+\newcommand{\ts}{\text{ }}
+\newcommand{\mn}{\text{-}}
 
 \begin{document}
 
 
 \title
 {
-   Spiking Neural P Systems: A Bibliography
+   Spiking Neural P System Models\\ as Formal Framework Models
 }
 
 
@@ -30,173 +41,246 @@
 
 % ================================================================================================= %
 
-\section{Introduction}
+\section{Background}
 
 % ================================================================================================= %
 
-\section{Static Spiking Neural P System Models} \label{s-snp-models}
+\section{Preliminaries}
 
-\begin{enumerate}
+The following sets will be commonly used throughout the document: $\mathbb{N} = \{0,1,2,3,...\}$,
+$\mathbb{N}_{\infty} = \mathbb{N} \cup \{\infty\}$, $[1..n] = \{1,...,n\}$, 
+$2^{[1..n]}=\mathcal{P}([1..n])$ (power set of $[1..n]$).
 
-\item Spiking Neural P Systems (2006)
-\cite{ionescu-2006-snp}
+Let $V$ be a set of symbols called an \emph{alphabet}. A \emph{string} or \emph{word} over $V$ is
+a sequence of symbols from $V$. The \emph{empty string} $\epsilon$ is a string without symbols, an 
+empty sequence. A \emph{string language} over $V$ is a set of strings over $V$. The set of all 
+strings over $V$ is denoted by $V^*$.
 
-\item Spiking Neural P systems with Extended Rule (2006)
-\cite{chen-2008-snp-e}
+A \emph{multiset} over $V$ is a function of the form $m: V \ra \mathbb{N}_{\infty}$ while a
+\emph{finite multiset} over $V$ is a function of the form $m: V \ra \mathbb{N}$. If $m$ is a
+multiset over $V$ and $a \in V$, $m(a)$ denotes the number of occurrences of symbol $a$ in multiset
+$m$. If $V=\{v_1,...,v_k\}$ and $m$ is a finite multiset over $V$, $m$ can be represented by the
+string ${v_1}^{m(v_1)}\cdots {v_k}^{m(v_k)}$. The size of a multiset $m$ over $V$ is
+$|m| = \sum_{v\in V}m(v)$. An \emph{empty multiset} $\emptyset$ is any multiset of size $0$. A 
+\emph{multiset language} over $V$ is a set of multisets over $V$. The set of all multisets over $V$ is denoted by
+$V^{\circ}$.
 
-\item Extended Spiking Neual P Systems (2006)
-\cite{alhazov-2006-esnp}
+Let $V=\{v_1,...,v_k\}$, $m$ be the multiset ${v_1}^{m(v_1)}\cdots{v_k}^{m(v_k)}$ and $n$ be the  
+multiset ${v_1}^{n(v_1)}\cdots{v_k}^{n(v_k)}$. $m \subseteq n$ if and only if for all $v \in V$ 
+$m(v) \leq n(v)$. $m+n$ is the multiset ${v_1}^{m(v_1)+n(v_1)}\cdots {v_k}^{m(v_k)+n(v_k)}$. If 
+$m \subseteq n$, $n-m$ is the multiset ${v_1}^{n(v_1)-m(v_1)}\cdots {v_k}^{n(v_k)-m(v_k)}$
 
-\item Spiking Neural P Systems with Astrocyte-like Control (2007)
-\cite{paun-2007-astrocyte-like}
+The set of $n$-vectors whose components are finite multisets over $V$ is denoted by
+${V^{\circ}}^{n}$. Let $X=(x_1,...,x_n), Y=(y_1,...,y_n) \in {V^{\circ}}^n$. $X \subseteq Y$ if and
+only if $x_i \subseteq y_i$ for $1 \leq i \leq n$. $X+Y = (x_1 + y_1,...,x_n + y_n)$. If 
+$X \subseteq Y$, $Y-X = (y_1-x_1,...,y_n-x_n)$. Aside from denoting the empty multiset, $\emptyset$
+will also denote a vector of empty multisets. i.e. $\emptyset = (\emptyset,...,\emptyset)$. If the
+context is not clear, we will specify if $\emptyset$ means an empty multiset or a vector of empty
+multisets.  
 
-\item Axon P Systems (2007)
-\cite{chen-2007-axon-p}
+A \emph{family of languages} is a set of languages. It can either be a family of string languages or 
+a family of multiset languages. The notations $\mathscr{F}$ and $\mathscr{F}^{\circ}$ will be used
+for a family of string languages and a family of multiset languages, respectively. The notation
+$\mathscr{F}(V)$ will be used for a family of string languages over alphabet $V$ while 
+$\mathscr{F}(V)^{\circ}$ will be used for a family of multiset languages over alphabet $V$. For
+example, $REG$ is the set regular string languages, $REG(V)$ is the set of regular string 
+languages over $V$, $REG^{\circ}$ is the set of regular multiset languages, and $REG(V)^{\circ}$ 
+is the set of regular multiset languages over $V$.
 
-\item Spiking Neural P Systems with Anti-spikes (2009)
-\cite{pan-2009-anti-spikes}
+% ================================================================================================= %
 
-\item Spiking Neural P Systems with Weights (2010).
-\cite{wang-2010-weights}
+\section{Formal Framework for Spiking Neural P Systems}
 
-\item Spiking Neural P Systems with Weighted Synapses (2011)
-\cite{pan-2012-weighted-synapses}
+% ================================================================================================= %
 
-\item Spiking Neural P Systems with Astrocytes (2012).
-\cite{pan-2012-astrocytes}
+\definition{}\label{def-conf} \textbf{[Configuration]} An $n$-degree \emph{configuration} 
+$C = (u_1,...,u_n)$ over alphabet $V$ is an $n$-vector of multisets over $V$. A configuration $C$ is 
+called a \emph{finite configuration} if all the components are finite multisets. 
 
-\item Spiking Neural P Systems with Rules on Synapses (2014).
-\cite{song-2014-rules-on-synapses}
+A configuration is referred to as a \emph{full configuration} if we specifically want to specify 
+that the configuration can contain infinite multisets.
 
-\item Spiking Neural P Systems with Threshold (2014)
-\cite{zeng-2014-thresholds}
+% ================================================================================================= %
 
-\item Spiking Neural P Systems with Cooperating Rules (2014)
-\cite{metta-2014-cooperating-rules}
+\definition{}\label{def-rule} \textbf{[Interaction Rule]} An $n$-degree \emph{interaction rule} over
+alphabet $V$ is the construct $(X \ra Y; K)$ where $X=(x_1,...,x_n)$ and $Y=(y_1,...,y_n)$ 
+are $n$-vectors of multisets over $V$ and $K = (k_1,...,k_n)$ is an $n$-vector of multiset
+languages.
 
-\item Cell-like Spiking Neural P Systems (2016)
-\cite{wu-2016-cell-like}
+$${[x_1]}_1\cdots {[x_n]}_n \ra {[y_1]}_1\cdots{[y_n]}_n\ts ;\ts {[k_1]}_1\cdots{[k_n]}_n$$
+The multiset languages $k_1,...,k_n$ are called \emph{control languages}.
 
-\item Spiking Neural P Systems with Request Rules (2016).
-\cite{song-2016-request-rules}
+$$(1,x_1)\cdots(n,x_n)\ra (1,y_1)\cdots(n,y_n)\ts;\ts (1,k_1)\cdots(n,k_n)$$
 
-\item Spiking Neural P Systems with White Hole Neurons (2016)
-\cite{song-2016-white-hole-neurons}
-
-\item Spiking Neural P Systems with Multiple Channels (2017)
-\cite{peng-2017-multiple-channels}
-
-\item Spiking Neural P Systems with Communication on Request
-\cite{pan-2017-communication-on-request}
-
-\item Spiking Neural P Systems with Polarizations (2017)
-\cite{wu-2018-polarizations}
-
-\item Spiking Neural P Systems with Colored Spikes (2017)
-\cite{song-2018-colored-spikes}
-
-\item Spiking Neural P Systems with Inhibitory Rules (2019)
-\cite{peng-2019-inhibitory-rules}
-
-\end{enumerate}
-
-% ================================================================================================================================================== %
-
-\section{Dynamic Spiking Neural P System Models}
-
-\begin{enumerate}
-
-\item Spiking Neural P Systems with Neuron Division (2011)
-\cite{wang-2011-neuron-division}
-
-\item Spiking Neural P Systems with Neuron Division and Budding (2011)
-\cite{pan-2011-division-budding}
-
-\item Spiking Neural P Systems with Structural Plasticity (2015)
-\cite{cabarle-2015-structural-plasticity}
-
-\item Spiking Neural P Systems with Neuron Division and Dissolution (2016)
-\cite{zhao-2016-division-dissolution}
-
-\item Spiking Neural P Systems with Schedule Synapses (2017)
-\cite{cabarle-2017-scheduled-synapses}
-
-\end{enumerate}
-
-% ================================================================================================================================================== %
-
-\section{Spiking Neural P System Models under Different Derivation Modes}
-
-\begin{enumerate}
-
-\item Spiking Neural P Systems with Exhaustive Use of Rules (2007)
-\cite{ionescu-2007-exhaustive}\\
-(proxy: \cite{zhang-2008-lang-exhaustive})
-
-\item Asynchronous Spiking Neural P Systems (2009)
-\cite{cavaliere-2009-asynchronous}
-
-\item Seqeuntial SNP Systems based on Min/Max Spike Number (2009)
-\cite{ibarra-2009-min-max-sequential}
-
-\item Asynchronous Spiking Neural P Systems with Local Synchronization (2013)
-\cite{song-2013-local-sync}
-
-\item Spiking Neural P Systems with Generalized Use of Rules (2014)
-\cite{zhang-2014-general-rule-use}
-
-\item Universal Spiking Neural P Systems with Generalized Use of Rules (2019)
-\cite{jiang-2019-improved-usnp-general-rule-use}
-
-\end{enumerate}
+if $x_i$ or $y_i$ is $\emptyset$ the term $(i,x_i)$ and $(i,y_i)$ can be removed
 
 
-% ================================================================================================================================================== %
+if $x_i$ (or $y_i$) is empty, the term $[x_i]_i$ (or $[y_i]_i$) can be removed.
 
-\section{Special Kinds of Spiking Neural P Systems}
+% ================================================================================================= %
 
-\begin{enumerate}
+\definition{}\label{def-elig} \textbf{[Rule Eligibility]} Let $C = (u_1,...,u_n)$ be an $n$-degree
+configuration over $V$ and $r = ((x_1,...,x_n) \ra (y_1,...,y_n);$ $(k_1,...,k_n))$ be an $n$-degree
+rule over $V$, rule $r$ is \emph{eligible} with respect to configuration $C$ if the following 
+conditions hold: (1) for all $x_i$, $x_i \subseteq u_i$ and (2) for all $u_i$, $u_i \in k_i$.
 
-\item Homogeneous Spiking Neural P Systems (2008)
-\cite{zeng-2009-snp-homo}
+% ================================================================================================= %
 
-\item Time-free Spiking Neural P Systems (2011)
-\cite{pan-2011-time-free}
+\definition{}\label{def-appc} \textbf{[Applicability of a Multiset of Rules]} Let $R'$ be a multiset 
+of $n$-degree rules over $V$ and $C = (u_1,...,u_n)$ be an $n$-degree configuration over $V$, $R'$ 
+is \emph{applicable} to configuration $C$ if the following conditions hold: (1) each rule 
+$(X_j \ra Y_j;K_j) \in R'$ is eligible with respect to configuration $C$ and (2) 
+$$X = \Bigg(\sum_{\substack{(X_j \ra Y_j; K_j) \in R'}} X_j\Bigg)\subseteq C.$$
 
-\item Fuzzy Reasoning Spiking Neural P Systems (2013)
-\cite{peng-2013-fuzzy-snp}
+% ================================================================================================= %
 
-\item Optimization Spiking Neural P Systems (2014)
-\cite{zhang-2014-optimization-snp}
+\definition{}\label{def-appl} \textbf{[Application of a Multiset of Rules]} If $R'$ is multiset of 
+rules applicable to configuration $C = (u_1,...,u_n)$, \emph{applying} $R'$ to configuration $C$ 
+means producing a new configuration $C'$ which is defined as: 
+$$C' = Apply(R',C) =  C - \Bigg(\sum_{\substack{(X_j \ra Y_j; K_j) \in R'}} X_j\Bigg) +
+\Bigg(\sum_{\substack{(X_j \ra Y_j; K_j) \in R'}} Y_j\Bigg).$$
 
-\item Spiking Neural P Systems with Learning Functions (2019)
-\cite{song-2019-learning-functions}
+The \emph{application function} $Apply(R',C)$
 
-\end{enumerate}
+% ================================================================================================= %
 
-% ================================================================================================================================================== %
+\definition{}\label{def-nc} \textbf{[Network of Cells]} A $\mathscr{F}$-controlled \emph{network of 
+cells} of degree $n$ is the construct $$\Pi = (n, V, W, c_{in}, c_{out}, R)$$ where
 
-\section{Abstract Applications: Applications to Abstract Problems}
+\begin{multicols}{2}
+\begin{itemize}
+\item $n$ is the number of cells; 
+\item $V$ is a finite alphabet;
+\item $W = (w_1,...,w_n)$ is the \emph{initial configuration} and $w_i \in V^{\circ}$ is the
+      multiset associated with cell $i$.
+\item $c_{in} \subseteq \{1,...,n\}$ is the set of \emph{input cells}.
+\item $c_{out} \subseteq \{1,...,n\}$ is the set of \emph{output cells}.
+\item $R$ is the set of interactive rules. 
+\end{itemize}
+\end{multicols}
 
-\begin{enumerate}
+$Applicable(\Pi,C)$ is the set of  multiset of rules (rules from $R$) applicable to configuration 
+$C$.
 
-\item x
+% ================================================================================================= %
 
-\end{enumerate}
+\definition{}\label{[def-nc2]}\textbf{[Network of Cells with Environment]} An 
+$\mathscr{F}$-controlled \emph{network of cells with environment} of degree $n$ is the construct:
 
-% ================================================================================================================================================== %
+$$\Pi_{inf} = (\Pi,Inf) = ((n,V,W,c_{in},c_{out},R), Inf)$$
 
-\section{Practical Applications: Applications to Practical Problems}
+\begin{multicols}{2}
+\begin{itemize}
+\item The first component $\Pi_{inf}$ is as defined in Definition \ref{def-nc}.
+\item $Inf = (inf_1,...,inf_n)$ where $inf_i \subseteq V$ is a \emph{set of symbols occurring 
+infinitely often in cell i}.
+\end{itemize}
+\end{multicols}
 
-\begin{enumerate}
+% ================================================================================================= %
 
-\item x
+\definition{}\label{def-derv} \textbf{[Derivation Mode]} A \emph{derivation mode} $\delta$ is a
+restriction of the set of applicable rules. For an $\mathscr{F}$-controlled network of cells $\Pi$
+and configuration $C$, $Appl(\Pi, C, \delta) \subseteq Appl(\Pi, C)$ denotes the set of multisets of
+rules in $\Pi$ applicable to configuration $C$ according to derivation mode $\delta$.
 
-\end{enumerate}
+% ================================================================================================= %
 
-% ================================================================================================================================================== %
+\definition{}\label{def-nc3}\textbf{[Network of Cells Working in $\delta$ Derivation Mode]} An
+$\mathscr{F}$-controlled $n$-degree \emph{network of cells working in $\delta$ derivation mode} is 
+the construct: $$\Pi' = (\Pi,\delta) = ((n,V,W,c_{in},c_{out},R), \delta)$$
+\begin{multicols}{2}
+\begin{itemize}
+\item The first component $\Pi_{inf}$ is as defined in Definition \ref{def-nc}.
+\item $\delta$ is the derivation mode used.
+\end{itemize}
+\end{multicols}
+
+$Applicable(\Pi, R', \delta)$
+
+$NC(n,V,\mathscr{F},\delta)$ is the set of $n$-degree $\mathscr{F}$-controlled network of cells 
+using alphabet $V$ and working in $\delta$ derivation mode.
+
+% ================================================================================================= %
+
+\definition{}\label{def-comp1}\textbf{[Computation of a Network of Cells]} A \emph{computation} of
+a network of cell $\Pi' = ((n,V,W,c_{in},c_{out},R),\delta)$ is sequence a $C_0,C_1,C_2,...$ with 
+the following properties:
+\begin{itemize}
+\item $C_0 = W$
+\item $C_{i+1} = Apply(\Pi',R',C_i)$ where $R' \in Applicable(\Pi,C_i,\delta)$.
+\end{itemize}
+
+% ================================================================================================= %
+
+\definition{}\label{def-input} \textbf{[Input Function]} An \emph{input function} for a system 
+$\Pi'=((n,v,W,c_{in},c_{out},R),\delta)$, $\Pi' \in NC(n,V,\mathscr{F},\delta)$, is a function of
+the form $Input(\Pi'): \mathbb{N} \ra {V^{\circ}}^{n}$ and fulfills that condition that for all
+$i \notin c_{in}$ the $i$-th component of resulting input vector from ${V^{\circ}}^n$ is an empty
+multiset.
+
+% ================================================================================================= %
+
+\definition{}\label{def-comp2} \textbf{[Computation of a Network of Cells]} 
+\begin{itemize}
+\item $C_0 = W + Input(\Pi')(0)$
+\item $C_{i+1} = Apply(\Pi',C_i,R') + Input(\Pi')(i+1)$
+where $R' \in Appl(\Pi, C_i, \delta)$.
+\end{itemize}
+% ================================================================================================= %
+
+\definition{}\label{def-output} \textbf{[Output Function]}
+
+% ================================================================================================= %
+
+\section{Spiking Neural P System Models as Formal Framework Network of Cells} 
+
+
+\subsection{Spiking Neural P System}
+
+\definition{}\label{def-snp} \textbf{[Spiking Neural P System]} A \emph{spiking neural P sytem} of
+degree $n$ the construct:
+
+$$\Pi = (O, \sigma_1,...,\sigma_n,syn,i_o)$$
+
+\begin{itemize}
+\item $O = \{a\}$ is the singleton alphabet of the system. Symbol $a$ is called a \emph{spike}.
+\item $\sigma_1,...,\sigma_n$ are neurons of the form
+      \begin{itemize}
+      \item $\sigma_i = (n_i, R_i)$ for $1 \leq i \leq n$. 
+      \item $n_i \in \mathbb{N}$ is initial number of spikes in neuron $i$. 
+      \item $R_i$ is a finite set of rules of the following two forms:
+            \begin{itemize}
+            \item \emph{Spiking Rule:} $E/a^c \ra a;d$ where $E$ is regular expression over $O$, 
+                  $d \in \mathbb{N}$,$c \in \mathbb{N}\backslash \{0\}$.
+            \item \emph{Forgetting Rule:} $a^s \ra \lambda$ where $s \in \mathbb{N}\backslash\{0\}$\
+                  and $\{a^s\} \cap L^{\circ}(E) = \emptyset$ for all $E$ that are regular 
+                  expressions of a spiking rules in the same neuron.
+            \end{itemize}
+      \end{itemize}
+\item $syn \subseteq [1..n] \times [1..n]$ is the set of \emph {synapses} where $(i,i) \notin syn$ 
+      for all $i \in [1..n]$.
+\item $i_o \in [1..n]$ specifies the \emph{output neuron}.
+\end{itemize}
+
+\noindent \textbf{SNP System' Spiking Rule:}
+$${[a^c]}_i \ra {[a]}_{j_1} \cdots [a]_{j_k};{[L^{\circ}(E)]}_i$$
+
+\noindent \textbf{SNP System's Forgetting Rule}
+$${[a^c]}_i \ra \emptyset;{[L^{\circ}(E)]}_i$$
+
+\noindent \textbf{SNP Systems with  Extended Spiking Rule}
+$${[a^c]}_i \ra {[a^p]}_{j_1} \cdots {[a^p]}_{j_k};{[L^{\circ}(E)]}_i$$
+
+\noindent \textbf{SNP Systems with Weights}
+$$[a^c]_i \ra [a^{w_{j_1}}]_{j_1} \cdots [a^{w_{j_k}}]_{j_k};[L^{\circ}(E)]_i$$
+
+\noindent \textbf{SNP Systems with Extended Rules and  Weights}
+$$[a^c]_i \ra [a^{p \cdot w_{j_1}}]_{j_1} \cdots [a^{p\cdot w_{j_k}}]_{j_k};[L^{\circ}(E)]_i$$
+
+% ================================================================================================= %
 
 \bibliographystyle{plain}
-\bibliography{snps-bibliography}
+\bibliography{cs-290}
 
 \end{document}
