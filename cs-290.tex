@@ -41,30 +41,30 @@
 
 % ================================================================================================= %
 
-\section{Background}
+\section{Background}\label{sec-background}
 
 \emph{Membrane computing} is a field of computer science that studies models of computation known as
 \emph{P systems}. P systems refer to a family of models of computation that are inspired by 
 different biological processes. P systems use biological concepts like cells, cell membranes, 
 neurons, tissues, etc. Rules (computing operations) in P systems are inspired by biological 
 processes like chemical reactions in cells, ion transport between regions divided by membranes, 
-membrane creation, division and dissolution, spiking of neurons, neurogenesis, and synaptogenesis. 
-P systems are parallel and distributed models of computation. This means a P system can apply 
+membrane creation, division and dissolution, spiking of neurons, neurogenesis and synaptogenesis, 
+etc. P systems are parallel and distributed models of computation. This means a P system can apply 
 multiple rules at the same time and these rules maybe applied in different parts or components of
 the P
 system. 
 
-Most P systems use multisets of symbols as computing elements. One can think of these symbols as 
-molecules or ions. The multisets of symbols are compartmentalized into regions and these regions are 
-defined by the membranes that enclose them. This is the reason why the field is known as `membrane
-computing'. Regions can be connected to each other. In cell-like P system, membranes inside the cell 
-can be nested. For example, if there are two membranes in a cell, membrane $0$ and membrane $1$, and 
-membrane $1$ is inside membrane $0$ then the region enclosed by membrane $1$ is connected to the 
-region enclosed by membrane $0$ that is outside membrane $1$. In tissue-like P system, membranes 
-represent cells and each cell enclosed one region. Cells (and hence regions) can be connected to 
-each other via channels. Tissue P systems form networks of cells. In general, the 
-\emph{configuration} of a P system refers to the network of cells or network of membranes where each
-cell or membrane contains a multiset of objects. In some P system models, a cell/membrane has a
+Most P systems use multisets of object symbols as computing elements. One can think of these symbols
+as abstraction of things like molecules or ions. The multisets of symbols are compartmentalized into
+regions that are defined by the membranes that enclose them. This is the reason why the field is 
+known as `membrane computing'. Regions can be connected to each other. In cell-like P systems, 
+membranes inside the cell can be nested. For example, if there are two membranes in a cell, membrane
+$0$ and membrane $1$, and membrane $1$ is inside membrane $0$ then the region enclosed by membrane 
+$1$ is connected to the region enclosed by membrane $0$ that is outside membrane $1$. In tissue-like 
+P systems, membranes represent cells and each cell enclosed one region. Cells (and hence regions) 
+can be connected to each other via channels. Tissue P systems form networks of cells. In general, 
+the \emph{configuration} of a P system refers to the network of cells or network of membranes where 
+each cell or membrane contains a multiset of objects. In some P system models, a cell/membrane has a
 state or status that is different from its multiset content. For example, in some cell-like P 
 systems, a membrane has a state known as \emph{polarity} or \emph{charge} which can either be 
 negative, positive, or neutral.
@@ -77,14 +77,14 @@ of a P system has to meet for the rule to be eligible for application, and (2) a
 (transformations) the rule will apply to the P system's configuration. Different types of rules have
 different sets of conditions and different actions since they are inspired by different biological 
 processes. For example, one common type of rule is called an \emph{evolution rule}. An 
-\emph{evolution rule} is associated with a region and it consumes a multiset of objects in that 
-region then produces another multiset of objects. Evolution rules are inspired by chemical reaction 
-occurring inside cell membranes. Another example of a rule type is the \emph{communication rule}. In 
-cell-like P systems, a communication rule is associated with a membrane and it facilitates a 
-transfer or exchange of multisets of objects between the region inside the membrane and the region 
-outside. Communication rules are inspired by the ion transfers between regions via ion channels on 
-cell membranes. There are also types of rules that transform the network of cells/membranes itself 
-and not just the contents of the  cells/membranes. For example, there are rules that can create and 
+evolution rule is associated with a region and it consumes a multiset of objects in that region then 
+produces another multiset of objects. Evolution rules are inspired by chemical reaction occurring
+inside cell membranes. Another example of a rule type is the \emph{communication rule}. In cell-like 
+P systems, a communication rule is associated with a membrane and it facilitates a transfer or 
+exchange of multisets of objects between the region inside the membrane and the region outside. 
+Communication rules are inspired by the ion transfers between regions via ion channels on cell 
+membranes. There are also types of rules that transform the network of cells/membranes itself and 
+not just the contents of the  cells/membranes. For example, there are rules that can create and 
 delete channels between cells. There are also rules that can create and delete membranes/cells. 
 These rules are inspired by processes like cell/membrane division, membrane dissolution, neuron 
 creation, synapse creation and deletion, etc.
@@ -103,7 +103,7 @@ enough  symbols such that the remaining multiset of symbols does not allow any m
 applied. In a P system working in maximally parallel mode, any combinations of eligibles rules that 
 are not maximal are not used. Another common derivation mode is the \emph{minimally parallel} mode. 
 In P systems working in minimally parallel mode, cells/membranes with eligible rules can still apply
-rules in parallel but each cell/membrane can only apply a single instance of an eligible rule. 
+rules in parallel but each cell/membrane can only apply at most single instance of an eligible rule. 
 Derivation modes can also describe rule priorities. For example, in a P system with two types of 
 rules, type $A$ and type $B$, one can specify in the model that if any type $A$ rule in a membrane 
 is eligible then no (eligible) type $B$ rules can be applied. In the situation where there is an 
@@ -112,7 +112,7 @@ in the same membrane is not valid.
 
 When one combines the different types of rules and the different derivation modes, one can produce
 a significant number of diverse P system models. In order to help make sense of the different P 
-system models a \emph{formal framework} was introduced in 2007 by Freund et al. The idea behind the 
+system models, a \emph{formal framework} was introduced in 2007 by Freund et al. The idea behind the 
 formal framework (for P systems) is to have a set of general concepts and constructs that can be 
 used when analysing most, if not all, types of P systems. The first version of the formal framework
 can be found in \cite{freund-2007-ff-1} and it is a framework for static tissue-like P system.
@@ -129,7 +129,7 @@ general form and a common syntax. The interaction rule form makes comparing rule
 systems easier. For example, two rule types from two different P systems may superficially appear 
 different, due to different syntax,  but when they are written as interaction rules it appears that 
 their eligibility criteria and their actions are actually very similar. In the formal framework, the 
-effect of an interaction rule when applied to configuration is formally defined. This is not 
+effect of an interaction rule when applied to a configuration is formally defined. This is not 
 necessarily the case for other P systems and their rules. In some P system models, the effect of a 
 rule on the configuration is described in a less formal manner (describe in plain English) which is 
 prone to different interpretations. If one is to write a rule type from one P system model as an
@@ -140,7 +140,7 @@ Aside from a general form of a rule, the framework in \cite{freund-2007-ff-1} al
 derivation modes used by most P systems. The meaning of those different derivation modes are 
 formally defined. In some P systems, derivation modes are less formally defined which again can lead 
 to multiple conflicting interpretations. The framework lists other possible derivation modes that
-are rarely or not yet used by existing P system models which means they can be used to formulate new.
+are rarely or not yet used by existing P system models which means they can be used to formulate new
 P system models.
  
 The formal framework from \cite{freund-2007-ff-1} is limited to static P system. An interaction rule
@@ -161,77 +161,95 @@ third version, the criteria for eligibility of an interaction rule rely on \emph
 (the pattern). For example, if certain multisets in specified regions are in the control languages 
 of those regions (the multisets `fits the pattern' for those regions), then the rule is eligible. 
 Control languages and the input and output constructs are needed to represent P systems known as 
-\emph{spiking neural P systems} (SN P systems). SN P systems use a type of rule that checks for 
+\emph{spiking neural P systems} (SNP systems). SNP systems use a type of rule that checks for 
 patterns. Such rules need the concept of a control language in order for them to be represented in 
-the framework. SN P systems are also usually used as transducers so it makes sense for the new 
+the framework. SNP systems are also usually used as transducers so it makes sense for the new 
 framework to have input and output constructs.
 
-The formal frameworks can be used to understand the functioning of P system variants. This is done 
+The formal frameworks can be used to understand the functioning of P system variants. This is done
 by translating concepts from a P system model to concepts in the framework. Since the concepts in 
 the framework are formally defined, the process of translating P system concepts to the language of
-the framework forces one to clarify and formalize those concepts that may have been vaguely 
+the framework forces one to clarify and formalize those concepts that may have been vaguely
 described in the P system model. This process is particularly helpful when analysing P system models 
-with vague semantics. The process highlights the concepts (e.g. rule semantics) that may have 
-different interpretations. The formal frameworks can also be used as a common language for comparing 
+with vague semantics. The process highlights the concepts (e.g. rule semantics) that may have
+different interpretations. The formal frameworks can also be used as a common language for comparing
 different P systems. By translating different P systems as network of cells in the formal framework, 
-the different P systems will have the same general form and will use the same syntax. This makes the 
-comparison of the models a significantly easier task. The formal frameworks can also be use to 
-extend P system models with new features. Since the constructs in the formal framework can be seen 
-as generalized versions of constructs in most P system models (i.e. formal framework's interaction i
-rule is a generalized P system rule), one can add features available in the formal framework 
-constructs as new features in new P system models. Some of these applications of the formal 
-framework can be found in \cite{verlan-2014-ff-2.5}.
+the different P systems will have the same general form and will use the same syntax. This makes the
+comparison of the models a significantly easier task. The formal frameworks can also be use to
+extend P system models with new features. Since the constructs in the formal framework can be seen
+as generalized versions of constructs in most P system models (i.e. the formal framework's 
+interaction rule is a generalized P system rule), one can add features available in the formal
+framework constructs as new features in new P system models. Some of these applications of the 
+formal framework can be found in \cite{verlan-2014-ff-2.5}.
 
-We want to do an exploratory study of the different SN P system variants using the formal 
-frameworks.
+%===================================================================================================
 
-SN P systems and similar variants are neural-like P systems. The rules of these models are inspired 
-by the mechanism of a \emph{spiking neuron}. In most SN P system variants, there is only a one type 
-of symbol called a \emph{spike}. The configuration of an SN P system is a network of neurons and 
-each neuron contains a multiset of spikes. The main type of rule used by SN P system variants is
-called a \emph{spiking rule}. A spiking rule looks at number of spikes in a certain neuron and if 
-the number of spikes fits the pattern (usually described by a regular expression) specified in the 
-rule then the neuron can send a spike to adjacent neurons in the network. The interaction rule in 
-third version of the formal framework \cite{verlan-2020-ff-snp} was specifically extended to have 
-control languages in order to be able to represent the spiking rule as interaction rules.
+This work is focuses on the use of the formal framework concepts and constructs for representing
+spiking neural P system models. 
 
-There are many SN P system variants that have features that are not available in the original SN P
-system model. For example, there is a variant with two types of objects known as the \emph{spike}
-and the \emph{anti-spike}. The variant is called SN P system \emph{with anti-spikes}. The spiking
-rule of this variant needs to take into account the new type of object which means both its syntax
-and semantics are different from the original spiking rule. It also works in a slightly different 
-derivation mode. There is a variant called SN P system \emph{with astrocytes}. It has a new 
-construct called \emph{astrocyte}. An astrocyte can be connected to different channels and it
-monitors the spikes travelling in those channels. It is a threshold mechanism that allows 
-travelling spikes to propagate if the total number of spikes travelling in the channels being 
-monitored by the astrocyte passes a certain threshold. There is a variant called SN P system
-\emph{with polarity}. Similar to some cell-like P systems, in SN P systems with polarity, neurons
-have charges that can either be positive, negative or neutral. The spiking rules in this model not
-only check the number of spikes in the neuron but also the polarity of the neuron. There are also
-SN P system variants that are exactly like the original SN P system except for the fact that they
-use a different derivation modes. For example, \emph{sequential} SN P systems are SN P systems that
-only allows a single rule to be applied at a time. Another example is the \emph{asynchronous} SN P
-system. This variant allows any combination of eligible rules (the combination does not have to be
-minimally parallel).
+Neural-like P systems known as \textit{spiking neural P systems} (SNP systems) were introduced in    
+\cite{ionescu-2006-snp}. They are inspired by the workings of a network of spiking neuron. A 
+biological neuron has an electric charge. If the neuron's charge changes and passes a certain 
+threshold, the neuron will `spike' and it will send a signal to other connected neurons. This is
+where the term `spiking neuron' came from. SNP systems use one type of object called a \emph{spike}. 
+An SNP system's neuron stores a multiset of spikes. The multiset of spikes in an SNP system's neuron 
+is the analogue of the electric charge in biological neurons. The spiking behavior of an SNP
+system's neuron is controlled by a set of rules. The rules look at the multiset of spikes in the
+neuron and determine if the neuron should spike or not. These rules are the analogue of the
+threshold mechanism in biological neurons. An SNP system is a network of such neurons. The neurons 
+are connected to each other using \textit{synapses}. We  will refer to this model (from 
+\cite{ionescu-2006-snp}) as the \textit{classic} or \textit{standard} SNP system since there are 
+already a lot of SNP system variants that have been introduced.                                  
+                                                                                                     
+The standard SNP system is based on an simplified and highly abstracted mechanisms of a spiking      
+neuron. There are many features and mechanism in the biological neural system that are good sources  
+of inspiration for the creation of new SNP system variants. Similar to the standard SNP systems,     
+other SNP system variants take some features or mechanisms from the biological neural system,        
+abstract and simplify them, and then incorporate the simplified features/mechanisms in the models.   
+Some examples of these variants are: SNP systems with weighted synapses
+\cite{wang-2010-weights,pan-2012-weighted-synapses}, SNP systems with inhibitory rules 
+\cite{peng-2019-inhibitory-rules}, SNP systems with astrocytes 
+\cite{paun-2007-astrocyte-like,pan-2012-astrocytes}, SNP systems with 
+neuron division, budding, and dissolution
+\cite{wang-2011-neuron-division,pan-2011-division-budding,zhao-2016-division-dissolution}, 
+SNP systems with dynamics synapses 
+\cite{cabarle-2015-structural-plasticity,cabarle-2017-scheduled-synapses},
+SNP systems with polarizations \cite{wu-2018-polarizations}, and SNP systems with thresholds         
+\cite{zeng-2014-thresholds}.                                                                         
 
-In \cite{verlan-2020-ff-snp}, after defining and describing the constructs of the framework, the
-authors translated the SN P system model to a model of the framework. They wrote both the spiking
-rule and forgetting rule of the SN P system as interaction rules. They mentioned that the SN P
-system works in minimally parallel mode which has already been characterized as the derivation mode
-$min_1$ in \cite{freund-2007-ff-stat}. Only original SN P system model (without delay) and SN P 
-systems with extended rules (also without delay) have been fully translated as models of the 
-framework. Some features of other SN P variants were translated by Verlan et al. in 
-\cite{verlan-2020-ff-snp} and in some conference presentations (Conference on Membrane Computing)
-but not the full models.
+Other SNP system models can be almost exactly similar to an existing SNP system model but only 
+having different derivations modes. For example, the standard SNP system works in minimally parallel
+mode while the following SNP models are almost exactly similar to standard SNP system except for 
+working on a different derivation modes:  SNP systems in \cite{ionescu-2007-exhaustive} use 
+exhaustive mode, SNP systems in \cite{cavaliere-2009-asynchronous} use asynchronous mode, SNP 
+systems in \cite{ibarra-2009-min-max-sequential} use sequential mode, SNP systems in 
+\cite{song-2013-local-sync} use asynchronous mode with local synchronization, and SNP systems in                                 
+\cite{zhang-2014-general-rule-use,jiang-2019-improved-usnp-general-rule-use} use a generalized       
+derivation mode.
 
-Our intention for the study is to look at different SN P system variants and fully translate them
-to models of the framework. We want to fully translate at least two SN P variants. After translating
-that variants, we can them compare the framework models with each other. This can give us insights
-on how similar or how different those SN P system variants are to each other.
+SNP system variants are different from each other because they have different features (i.e. 
+different types of rules), different derivation modes, or a combination of both. Aside from being 
+inspired by neural system features and mechanisms, some SNP system variants also adopt features from 
+other (non-SNP) P systems or get inspiration from other physical or biological phenomena. Other 
+SNP system variants can be found in                                                                                      
+\cite{chen-2008-snp-e,alhazov-2006-esnp,chen-2007-axon-p,pan-2009-anti-spikes,song-2014-rules-on-synapses,metta-2014-cooperating-rules,wu-2016-cell-like,song-2016-request-rules,pan-2017-communication-on-request,song-2018-colored-spikes}  
+
+As mentioned above, the third version of formal framework \cite{verlan-2020-ff-3} is an extension of 
+the first version and the modifications/extensions are made in order to represent SNP systems. In 
+\cite{verlan-2020-ff-3}, after defining and describing the constructs of the framework, the authors 
+translated the standard SNP system model (with rules without delay) as formal framework's network of 
+cells. Standards SNP system's rules are translated as interaction rules. The authors also translated
+ rules of other SNP systems variants
+\cite{chen-2008-snp-e,pan-2012-weighted-synapses,alhazov-2006-esnp,peng-2017-multiple-channels,pan-2012-astrocytes} 
+as interaction rules.  
+
+ADD RESULTS AND SUMMARY HERE
 
 % ================================================================================================= %
 
-\section{Preliminaries}
+\section{Preliminaries}\label{sec-preliminaries}
+
+This section present preliminary concepts used by SNP system models and the formal framework.
 
 The following sets will be commonly used throughout the document: $\mathbb{N} = \{0,1,2,3,...\}$,
 $\mathbb{N}_{\infty} = \mathbb{N} \cup \{\infty\}$, $[1..n] = \{1,...,n\}$, 
@@ -276,12 +294,11 @@ is the set of regular multiset languages over $V$.
 
 % ================================================================================================= %
 
-\section{Formal Framework for Spiking Neural P Systems}
+\section{Formal Framework for Spiking Neural P Systems}\label{sec-ff}
 
-\cite{freund-2007-ff-1}
-\cite{freund-2013-ff-2}
-\cite{verlan-2014-ff-2.5}
-\cite{verlan-2020-ff-3}
+This section presents the constructs from the third version of the formal framework 
+\cite{verlan-2020-ff-3} and some constructs from the first version of the framework 
+\cite{freund-2007-ff-1} that were no longer presented in \cite{verlan-2020-ff-3}.
 
 % ================================================================================================= %
 
@@ -315,9 +332,19 @@ $$(1,x_1)\cdots(n,x_n)\ra (1,y_1)\cdots(n,y_n)\ts;\ts (1,k_1)\cdots(n,k_n)$$
 where any component $(i,x_i)$, or $(i,y_i)$, can be omitted if $x_i = \emptyset$, or 
 $y_i = \emptyset$, and any component $(i,k_i)$ can be omitted if $k_i = V^{\circ}$. To have a more
 compact notation, components $(i,x_i)$, $(i,y_i)$, $(i,k_i)$ can be written as ${[x_i]}_i$,
-${[y_i]}_i$, and ${[k_i]}_i$, respectively and the entire rule can be written as:
+${[y_i]}_i$, and ${[k_i]}_i$, respectively. Additionally, the control language components of the 
+rule can be written first followed by a slash instead of a semicolon then the $X$ and $Y$ 
+components. The rule can be written as:
 
-$${[x_1]}_1\cdots {[x_n]}_n \ra {[y_1]}_1\cdots{[y_n]}_n\ts ;\ts {[k_1]}_1\cdots{[k_n]}_n$$
+$${[k_1]}_1\cdots{[k_n]}_n\ts / \ts {[x_1]}_1\cdots {[x_n]}_n \ra {[y_1]}_1\cdots{[y_n]}_n$$
+
+The rule syntax above will be used since it is closer to the syntax of most rules in different SNP 
+system models. It is organized in such a way that all the components of a rule on the left side
+of the arrow, ${[k_1]}_1 ... {[k_n]}_n/{[x_1]}_1...{[x_n]}_n$, are the criteria for rule eligibility
+while all the components on the right side of the slash, 
+${[x_1]}_1\cdots {[x_n]}_n \ra {[y_1]}_1\cdots{[y_n]}_n$, represent the actions that will be 
+performed if the rule is applied. The ${[x_1]}_1...{[x_n]}_n$ components specify both eligibility
+criteria and actions of the rule.
 
 % ================================================================================================= %
 
@@ -425,7 +452,7 @@ enough objects for the new multiset of rules to consume). Another common derivat
 system $\Pi$ are grouped into non-intersecting partitions. Only applicable multisets of rules that 
 have at most one instance of rule for each of the partition are used in this mode. Maximal 
 parallelism, minimal parallelism and other derivations modes are listed in detail in Appendix 
-\ref{app-deri}.
+\ref{app-derivation}.
 
 % ================================================================================================= %
 
@@ -503,7 +530,10 @@ in Appendix \ref{app-halt}.
 
 %===================================================================================================
 
-\section{Spiking Neural P System Models as Formal Framework Network of Cells} 
+\section{Spiking Neural P System Models as Formal Framework Network of Cells}\label{sec-snp}
+
+This section looks at different SNP system models as networks of cells. Concepts and constructs from
+the different SNP system models are translate to concepts and construct in the formal framework.  
 
 \subsection{Spiking Neural P System}
 
@@ -532,28 +562,56 @@ $$\Pi = (O, \sigma_1,...,\sigma_n,syn,i_o)$$
 \item $i_o \in [1..n]$ specifies the \emph{output neuron}.
 \end{itemize}
 
+Standard SNP systems of degree $n$, as networks of cells, belong to the family 
+$NC(n,O,REG^{\circ}(O), min)$. They use the alphabet is $O =\{a\}$. All control languages used by 
+the rules are from the family $REG^{\circ}(O)$ which is the family of regular multiset languages 
+over $O$. The systems work under minimal parallelism ($\delta = min$) where rules in the system are
+partitioned in such a way that each neuron has its own set of rules and only combinations of rules 
+where at most $1$ rule is used per neuron are allowed.
+
+A spiking rule $E/a^c \ra a;d$ in neuron $i$ is eligible if the multiset $m_i = a^{n_i}$ in the
+neuron $i$ is in the multiset languages $L^{\circ}(E)$ and the number of spikes $n_i$ is at least
+$c$. If the rule is applied, at step $t$, $c$ spikes are consumed changing the spike count of the
+neuron to $n_i-c$, the neuron `closes' for $d$ time steps from time step $t$ to time step $t+d-1$, 
+then the neuron will send a spike at time $t+d$ to all other neurons adjacent to neuron $i$ i.e.
+Neuron $i$ will send a spike to all neuron $j$ such that $(i,j) \in syn$. When a neuron is closed,
+it can neither receive spikes nor activate a rule. A forgetting rule $a^s \ra \lambda$ in neuron $i$
+is eligible if the multiset $m_i$ in the neuron is $a^s$. When the forgetting rule is applied, all
+$s$ spikes in the neuron are consumed changing the spike count in the neuron to $0$.
+
+An $n$-degree SNP system's configuration is the construct $(m_1/t_1,...,m_n/t_n)$ where $m_i$ is
+the multiset of spikes in neuron $i$ while $t_i \in \mathbb{N}$ is the \emph{state} of neuron $i$.
+Neuron $i$ is in an \emph{open state} if $t_i = 0$ otherwise it is in a \emph{closed state} if
+$t_i > 0$.  
+
+\cite{ibarra-2007-snp-normal}
 
 \noindent \textbf{SNP System' Spiking Rule:}
-$${[a^c]}_i \ra {[a]}_{j_1} \cdots [a]_{j_k};{[L^{\circ}(E)]}_i$$
+$$E/a^c \ra a$$
+
+$${[L^{\circ}(E)]}_i/ {[a^c]}_i \ra {[a]}_{j_1} \cdots [a]_{j_k}$$
 
 \noindent \textbf{SNP System's Forgetting Rule}
-$${[a^c]}_i \ra \emptyset;{[L^{\circ}(E)]}_i$$
+$$E/a^c \ra \lambda$$
+$${[L^{\circ}(E)]}_i\ts/\ts {[a^c]}_i \ra \emptyset$$
 
 \noindent \textbf{SNP Systems with  Extended Spiking Rule} \cite{chen-2008-snp-e}
-$${[a^c]}_i \ra {[a^p]}_{j_1} \cdots {[a^p]}_{j_k};{[L^{\circ}(E)]}_i$$
+$$E/a^c \ra a^p$$
+$${[L^{\circ}(E)]}_i\ts/\ts {[a^c]}_i \ra {[a^p]}_{j_1} \cdots {[a^p]}_{j_k}$$
 
-\noindent \textbf{SNP Systems with Weights}
-$$[a^c]_i \ra [a^{w_{j_1}}]_{j_1} \cdots [a^{w_{j_k}}]_{j_k};[L^{\circ}(E)]_i$$
+\noindent \textbf{SNP Systems with Weighted Synapses} \cite{pan-2012-weighted-synapses}
+$${[L^{\circ}(E)]}_i\ts/\ts {[a^c]}_i \ra {[a^{p \cdot w_{j_1}}]}_{j_1} \cdots {[a^{p\cdot w_{j_k}}]}_{j_k}$$
 
-\noindent \textbf{SNP Systems with Extended Rules and  Weights}
-$$[a^c]_i \ra [a^{p \cdot w_{j_1}}]_{j_1} \cdots [a^{p\cdot w_{j_k}}]_{j_k};[L^{\circ}(E)]_i$$
+\noindent \textbf{SNP Systems with Multiple Channels} \cite{peng-2017-multiple-channels}
+$$E/a^c \ra a^p\ts (l)$$
+$${[L^{\circ}(E)]}_{i}\ts/\ts {[a^c]}_i \ra {[a^p]}_{j'_1}...{[a^p]}_{j'_{k'}}$$
 
 %===================================================================================================
 
 \appendix{}
 
 \section*{Appendices}\label{app}
-\section{Derivation Modes}\label{app-deri}
+\section{Derivation Modes}\label{app-derivation}
 
 \cite{freund-2007-ff-1}
 
