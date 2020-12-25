@@ -7,6 +7,9 @@
 \usepackage{mathrsfs}            % for \mathscr
 \usepackage{multicol}            % for \multicols
 \usepackage[hidelinks]{hyperref} % for clickable and hidden reference links
+\usepackage{float}               % for [H] options in the figure environment
+\usepackage{tikz}                % for tikzpicture
+\usetikzlibrary{positioning}     % for tikz's relative positioning
 
 \geometry
 {
@@ -278,10 +281,8 @@ $m \subseteq n$, $n-m$ is the multiset ${v_1}^{n(v_1)-m(v_1)}\cdots {v_k}^{n(v_k
 The set of all $n$-vectors whose components are finite multisets over $V$ is denoted by
 ${V^{\circ}}^{n}$. Let $X=(x_1,...,x_n), Y=(y_1,...,y_n) \in {V^{\circ}}^n$. $X \subseteq Y$ if and
 only if $x_i \subseteq y_i$ for $1 \leq i \leq n$. $X+Y = (x_1 + y_1,...,x_n + y_n)$. If 
-$X \subseteq Y$, $Y-X = (y_1-x_1,...,y_n-x_n)$. Aside from denoting the empty multiset, $\emptyset$
-will also denote a vector of empty multisets. i.e. $\emptyset = (\emptyset,...,\emptyset)$. If the
-context is not clear, we will specify if $\emptyset$ means an empty multiset or a vector of empty
-multisets.  
+$X \subseteq Y$, $Y-X = (y_1-x_1,...,y_n-x_n)$. An $n$-vector whose components are all empty 
+multisets is denoted by $\emptyset_n$. i.e. $\emptyset_n = (\emptyset,...,\emptyset)$. i
 
 A \emph{family of languages} is a set of languages. It can either be a family of string languages or 
 a family of multiset languages. The notations $\mathscr{F}$ and $\mathscr{F}^{\circ}$ will be used
@@ -559,7 +560,8 @@ $$\Pi = (O, \sigma_1,...,\sigma_n,syn,i_o)$$
       \end{itemize}
 \item $syn \subseteq [1..n] \times [1..n]$ is the set of \emph {synapses} where $(i,i) \notin syn$ 
       for all $i \in [1..n]$.
-\item $i_o \in [1..n]$ specifies the \emph{output neuron}.
+\item $i_o \in [1..n]$ specifies the \emph{input neuron} in accepting mode or the \emph{output
+      neuron} in generating mode.
 \end{itemize}
 
 Standard SNP systems of degree $n$, as networks of cells, belong to the family 
@@ -574,26 +576,115 @@ neuron $i$ is in the multiset languages $L^{\circ}(E)$ and the number of spikes 
 $c$. If the rule is applied, at step $t$, $c$ spikes are consumed changing the spike count of the
 neuron to $n_i-c$, the neuron `closes' for $d$ time steps from time step $t$ to time step $t+d-1$, 
 then the neuron will send a spike at time $t+d$ to all other neurons adjacent to neuron $i$ i.e.
-Neuron $i$ will send a spike to all neuron $j$ such that $(i,j) \in syn$. When a neuron is closed,
-it can neither receive spikes nor activate a rule. A forgetting rule $a^s \ra \lambda$ in neuron $i$
-is eligible if the multiset $m_i$ in the neuron is $a^s$. When the forgetting rule is applied, all
-$s$ spikes in the neuron are consumed changing the spike count in the neuron to $0$.
+Neuron $i$ will send a spike to all neuron $j$ such that $(i,j) \in syn$. The $d$ compnent of the
+rule is called the \emph{delay} since it delays the rule from sending out spikes. When a neuron is 
+closed, it can neither receive spikes nor activate a rule. A forgetting rule $a^s \ra \lambda$ in 
+neuron $i$ is eligible if the multiset $m_i$ in the neuron is $a^s$. When the forgetting rule is 
+applied, all $s$ spikes in the neuron are consumed changing the spike count in the neuron to $0$.
 
 An $n$-degree SNP system's configuration is the construct $(m_1/t_1,...,m_n/t_n)$ where $m_i$ is
 the multiset of spikes in neuron $i$ while $t_i \in \mathbb{N}$ is the \emph{state} of neuron $i$.
 Neuron $i$ is in an \emph{open state} if $t_i = 0$ otherwise it is in a \emph{closed state} if
-$t_i > 0$.  
+$t_i > 0$. $t_i$ also represents the time delay before the active rule in neuron $i$ sends a spike
+out.
 
-\cite{ibarra-2007-snp-normal}
+To simplify the formal framework, the delay component of the spiking rule is not incorporated to the
+framework's interaction rule. This is not very restrictive, in terms of computability, since it was
+shown in \cite{ibarra-2007-snp-normal} that the SNP system model that only has spiking rules without 
+delay (i.e. all spiking rules have $d = 0$, simply written as $E/a^c \ra a$) is still 
+turing-complete. This also means that the configuration of the system is simply the $n$-vector
+$(m_1,...,m_n)$ of the multisets of spikes of the neurons. 
 
-\noindent \textbf{SNP System' Spiking Rule:}
-$$E/a^c \ra a$$
+An \textbf{SNP system's spiking rule (without delay)} $\mathbf{E/a^c \ra a}$ in neuron $i$ can be 
+written as the formal framework interaction rule: 
 
 $${[L^{\circ}(E)]}_i/ {[a^c]}_i \ra {[a]}_{j_1} \cdots [a]_{j_k}$$
 
-\noindent \textbf{SNP System's Forgetting Rule}
-$$E/a^c \ra \lambda$$
-$${[L^{\circ}(E)]}_i\ts/\ts {[a^c]}_i \ra \emptyset$$
+where neurons $j_1,...,j_k$ are neurons adjacent to neuron $i$. i.e. $(i,j) \in syn$ for $j \in \{
+j_1,...,j_k\}$, as shown in Figure \ref{fig-snp}.
+
+\begin{figure}[H]
+\begin{center}                                                                                           
+\begin{tikzpicture}
+[
+scale=1.0,
+neuron-a/.style={circle,draw,minimum size = 07mm},
+text-a/.style={black},
+]
+\node (n1) [neuron-a] at (0,0) {$ $};
+\node (l1) [text-a,   left  = 00mm of n1]              {$i$};
+\node (n2) [neuron-a, right = 20mm of n1]              {$ $};
+\node (l2) [text-a,   right = 00mm of n2]              {$j$};
+\node (d1) [text-a,   above = 03mm of n2, rotate =90]  {$...$};
+\node (n3) [neuron-a, above = 06mm of n2]              {$ $};
+\node (l3) [text-a,   right = 00mm of n3]              {$j_1$};
+\node (d2) [text-a,   below = 03mm of n2, rotate =270] {$...$};
+\node (n4) [neuron-a, below = 06mm of n2]              {$ $};
+\node (l4) [text-a,   right = 00mm of n4]              {$j_k$};
+\draw [->] (n1) -- (n2) node[midway, below] {$ $};
+\draw [->] (n1) -- (n3) node[midway, below] {$ $};
+\draw [->] (n1) -- (n4) node[midway, below] {$ $};
+\end{tikzpicture}                                                                                        
+\end{center}                                                                                             
+\caption{Neuron $i$ and Adjacent Neurons $j_1,...j_k$}\label{fig-snp}
+\end{figure} 
+
+An \textbf{SNP system's forgetting rule} $\mathbf{a^s \ra \lambda}$ in neuron $i$ can be written as 
+the interaction rule:
+
+$${[L^{\circ}(E)]}_i\ts/\ts {[a^c]}_i \ra \emptyset_n$$
+
+Originally, SNP systems have been used to accept or generate sets of numbers. An SNP system in 
+\emph{accepting mode} is used to accept a set of numbers. Neuron $i_o$ is the specified input 
+neuron. The input neuron will receive two spike, one spike at time $t_1$ and another spike at time
+$t_2$. The difference $n = t_2-t_1$ between the arrival time of the first spike and second spike
+is the input to the system. Number $n$ is accepted by the system if the system halts on the input.
+Total halting is the halting condition used by the SNP system model. 
+
+The function below is the input function used by the system $\Pi'$ (network of cells representation
+of SNP system $\Pi$):
+
+$$Input(\Pi')(t) = Z^{(t)} = (z_1^{(t)},...,z_{i_o}^{(t)},...,z_n^{(t)}) =
+(\emptyset,...,z_i^{(t)},...,\emptyset)$$
+\[
+z_{i_o}^{(t)} =
+\begin{cases} 
+a           & ,\ts t \in \{t_1,t_2\} \\
+\emptyset   & ,\ts t \notin \{t_1,t_2\}
+\end{cases}
+\]
+
+An SNP system in \emph{generating mode} is used to generate a set of numbers. Neuron $i_o$ is the
+specified output neuron. The number generated by the SNP system is represented by the difference
+$n = t_2 - t_1$ between time $t_1$ when neuron $i_o$ first spikes and time $t_2$ when neuron $i_o$
+spikes for the second time. The function below is the output function used by network of cells 
+$\Pi'$:
+
+\[
+Output(\Pi',C)(t) = 
+\begin{cases}
+n = t_2 - t_1 &, \text{if output neuron spikes at least once in $t$ steps}\\
+\infty        &, \text{if output neuron has not spike yet in $t$ steps} 
+\end{cases}
+\]
+
+$C = C_1, C_2,C_3,...$ is the computation of $\Pi'$. Both $t_1$ and $t_2$ can be determined by 
+looking at the different configurations in computation $C$ then the output function can simply 
+return $n = t_2 -t_1$. 
+
+The $n$-degree SNP system $\Pi$, as defined in Definition \ref{def-snp} (except all spiking rules 
+have delay $d=0$), can be represented by the formal framework's $REG^{\circ}$-controlled network of 
+cells:
+$$\Pi'= ((n,O,W=(w_1,...,w_n),c_{in}=\emptyset, c_{out}=\{i_o\}, R),\delta=min) 
+\text{ where } w_i = a^{n_i} \text{ (in generating mode)}$$ 
+$$\Pi'= ((n,O,W=(w_1,...,w_n), c_{in}=\{i_o\}, c_{out}=\emptyset, R),\delta=min) 
+\text{ where } w_i = a^{n_i} \text{ (in accepting mode)}$$ 
+
+
+
+%===================================================================================================
+
+\subsection{SNP System Models with More General Rules}
 
 \noindent \textbf{SNP Systems with  Extended Spiking Rule} \cite{chen-2008-snp-e}
 $$E/a^c \ra a^p$$
@@ -601,6 +692,32 @@ $${[L^{\circ}(E)]}_i\ts/\ts {[a^c]}_i \ra {[a^p]}_{j_1} \cdots {[a^p]}_{j_k}$$
 
 \noindent \textbf{SNP Systems with Weighted Synapses} \cite{pan-2012-weighted-synapses}
 $${[L^{\circ}(E)]}_i\ts/\ts {[a^c]}_i \ra {[a^{p \cdot w_{j_1}}]}_{j_1} \cdots {[a^{p\cdot w_{j_k}}]}_{j_k}$$
+
+\begin{figure}[H]
+\begin{center}                                                                                           
+\begin{tikzpicture}
+[
+scale=1.0,
+neuron-a/.style={circle,draw,minimum size = 07mm},
+text-a/.style={black},
+]
+\node (n1) [neuron-a] at (0,0) {$ $};
+\node (l1) [text-a,   left  = 00mm of n1]              {$i$};
+\node (n2) [neuron-a, right = 20mm of n1]              {$ $};
+\node (l2) [text-a,   right = 00mm of n2]              {$j$};
+\node (d1) [text-a,   above = 03mm of n2, rotate =90]  {$...$};
+\node (n3) [neuron-a, above = 06mm of n2]              {$ $};
+\node (l3) [text-a,   right = 00mm of n3]              {$j_1$};
+\node (d2) [text-a,   below = 03mm of n2, rotate =270] {$...$};
+\node (n4) [neuron-a, below = 06mm of n2]              {$ $};
+\node (l4) [text-a,   right = 00mm of n4]              {$j_k$};
+\draw [->] (n1) -- (n2) node[midway, below] {$w_1$};
+\draw [->] (n1) -- (n3) node[midway, below] {$w$};
+\draw [->] (n1) -- (n4) node[midway, below] {$w_k$};
+\end{tikzpicture}                                                                                        
+\end{center}                                                                                             
+\caption{Neuron $i$ and Adjacent Neurons $j_1,...j_k$}\label{fig-snp2}
+\end{figure} 
 
 \noindent \textbf{SNP Systems with Multiple Channels} \cite{peng-2017-multiple-channels}
 $$E/a^c \ra a^p\ts (l)$$
