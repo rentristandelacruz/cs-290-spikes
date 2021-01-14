@@ -10,6 +10,9 @@
 \usepackage{float}               % for [H] options in the figure environment
 \usepackage{tikz}                % for tikzpicture
 \usetikzlibrary{positioning}     % for tikz's relative positioning
+\usepackage{makecell}            % for \thread 
+
+\renewcommand\theadfont{\bfseries}
 
 \geometry
 {
@@ -293,6 +296,40 @@ $\mathscr{F}^{\circ}(V)$ will be used for a family of multiset languages over al
 example, $REG$ is the set regular string languages, $REG(V)$ is the set of regular string 
 languages over $V$, $REG^{\circ}$ is the set of regular multiset languages, and $REG^{\circ}(V)$ 
 is the set of regular multiset languages over $V$.
+
+A \emph{regular expression over alphabet} $V$ is a string over the alphabet $V_{reg} = V \cup 
+\{*,(,),\cup,|\}$ with a particular form. The regular expression defines a string language over $V$.
+Any language definable using a regular expression is called a \emph{regular language}. The set of 
+all regular expressions over $V$ can be defined recursively. The empty string $\epsilon$ is a 
+regular expression and it defines the empty language $\emptyset$. If $v \in V$, then $v$ is a
+regular expression that defines the language $\{v\}$. Let $E$ be a regular expression, $L(E)$ 
+denotes the languages defined by regular expression $E$. If $E_1$ and $E_2$ are regular expressions
+over $V$, then $E_1 \cup E_2$ is a regular expression over $V$ that defines the language
+$L(E_1) \cup L(E_2)$, $E_1 | E_2$ or simply $E_1 E_2$ is a regular expression that defines the
+language $\{w_1 w_2\ts|\ts w_1\in L(E_1),\ts w_2\in L(E_2)\}$, $(E_1)$ is a regular expression that
+similar to $E_1$ also defines the language $L(E_1)$, and ${E_1}*$, written as ${E_1}^*$, is a 
+regular expression that defines the language $\{w^n\ts |\ts w\in L(E_1),\ts n\in \mathbb{N}\}$. An 
+\emph{extended regular expression} over $V$ is as string over $V_{exreg} = V \cup \{*,(,),\cup,|,',
+\cap\}$. The set of extended regular expressions over $V$ is defined in a similar manner to the
+recursive definition of the set of regular expression over $V$ but with the following additional
+rules. If $E_1$ and $E_2$ are extended regular expressions over $V$, then $E_1 \cap E_2$ is an
+extended regular expression that defines the language $L(E_1) \cap \L(E_2)$ and $E_1'$ is an
+extended regular expression that defines the language $V^*\backslash L(E_1)$, the complement of the
+language $L(E_1)$. Extended regular expressions also define regular languages. A language defined by
+an extended regular expression can also be defined by a non-extended regular expression.  The 
+complement symbol/operator ($'$) and the intersection symbol/operator ($\cap$) are added in order to 
+make expressions that define languages more succinct. A regular language defined by some regular
+expression $E_1$ can possibly be defined by a shorter extended regular expression $E_2$. For the
+rest of the document, the term `regular expression' will be used for both extended and non-extended
+regular expressions.
+
+Since multisets can be represented as strings, regular expressions can also be used to define 
+\emph{regular multiset languages}. A regular multiset language over $V$ can be defined by a regular
+expression over $V$ of a particular form. Given the alphabet $V = \{v_1,...,v_n\}$, a regular 
+expression that defines a multiset language has the form $E_1|E_2|E_3|\cdots|E_n$ where, for $1 \leq
+i \leq n$, $E_i$ is a regular expression over $\{v_i\}$. A regular expression $E=E_1|E_2|\cdots|E_n$
+defines the multiset language $\{m\ts|\ts \text{string representation of $m$ is in $L(E)$}\}$. 
+$L^{\circ}(E)$ denotes the multiset language defined by the regular expression $E$.
 
 % ================================================================================================= %
 
@@ -723,6 +760,131 @@ text-a/.style={black},
 \noindent \textbf{SNP Systems with Multiple Channels} \cite{peng-2017-multiple-channels}
 $$E/a^c \ra a^p\ts (l)$$
 $${[L^{\circ}(E)]}_{i}\ts/\ts {[a^c]}_i \ra {[a^p]}_{j'_1}...{[a^p]}_{j'_{k'}}$$
+
+%===================================================================================================
+
+\subsection{Spiking Rules with Delays}
+
+An $n$-degree SNP system whose spiking rules have no delay ($d =0$) can be represented by a network 
+of cell from the family $NC(n,\{a\}, REG^{\circ}, min)$. This section shows that $n$-degree SNP 
+systems that use spiking rules with delay ($d > 0$) can simulated by network of cells from the 
+family $NC(n, V, REG^{\circ}, min)$ where $V = \{a\} \cup \{x,r_1,...,r_f\}$. With the help of the
+additional symbols from $\{x,r_1,...,r_f\}$, the behavior of a spiking rule with delay can be 
+simulated by a set of interaction rules. 
+
+The following behavior of the spiking rule with delay that should be simulated:
+\begin{itemize}
+\item \emph{Delayed Spiking}: When the rule is applied at time $t$, the neuron should only send
+      spikes to adjacent neurons at time $t+d$.
+\item \emph{Prevention of Rule Application}: When a rule is active in a neuron, no other rules in 
+      the neuron should be applied. 
+\item \emph{Closing of Neuron}: When a neuron is closed, it should not receive spikes from other 
+      neurons.
+\end{itemize}
+
+If a spiking rule with delay $d$ is applied at time $t$, it will be active for $d+1$ steps, from 
+time $t$ to time $t+d$. The spiking rule is active $d+1$ steps but the neuron that applied the rule 
+is only closed for $d$ steps, from time $t$ to time $t+d-1$. At time $t+d$, the neuron opens and it
+sends out spikes to adjacent neurons. Step $t+d$ is the only time where the rule is still active 
+but the neuron is already open. The scenario at time $t+d$ is the reason why the \emph{closing of
+neuron} behavior is differentiated from the \emph{prevention of rule application} behavior.
+
+Additional symbols will be used in order to simulate the behavior of spiking rules. The \emph{delay}
+symbol $x$ is used to represent delay and the closed state of a neuron. If there are $x$ symbols 
+in a  neuron, then that neuron is closed. The \emph{rule} symbols $r_1,...,r_f$ are used to 
+represent rules being active in a neuron. If symbol $r_i \in \{r_1,...,r_f\}$ is in a neuron, then 
+the spiking rule represented by $r_i$ is active in that neuron. If neuron $i$ contains the 
+most number of spiking rules (with delay), then $p$ is the number of spiking rules (with delay) in
+neuron $i$. For example, if neuron $A$ contains the most number of spiking rules, having 10 spiking
+rules with delay, then $f=10$ and set of rule symbols that will be used is $\{r_1,...,r_{10}\}$.
+Neuron $A$ will use symbols $r_1,...,r_{10}$ but another neuron in the same system, neuron $B$, that 
+only has two spiking rules with delay, will only use symbols $r_1$ and $r_2$. The alphabet of the 
+network of cell will be $V = \{a,x,r_1,...,r_f\}$.
+
+Let the spiking rule $R$ be in neuron $i$ and neurons $j_1,...,j_k$ are adjacent to neuron $i$ (see
+Figure \ref{fig-snp}). The behavior of a spiking rule $R: E/a^c \ra a^p;d$ will be simulated by 
+interaction rules with the following forms:
+
+\begin{multicols}{2}
+\begin{itemize}
+\item $R_1:\ts [L^{\circ}(E_1)]_i / [a^c]_i \ra [x^{d-1}r]_i$ 
+\item $R_2:\ts [L^{\circ}(E_2)]_i / [x]_i \ra \emptyset_n$
+\item $R_3:\ts [L^{\circ}(E_3)]_i / [r]_i  \ra [a^p]_{j_1}\cdots[a^p]_{j_k}$ 
+\item $E_1 = E$
+\item $E_2 = a^*|x^+|r_1^*|\cdots|r_f^*$
+\item $E_3 = a^*|r$
+\end{itemize}
+\end{multicols}
+
+Interaction rule $R_1$ can only be applied if the neuron $i$ contains the multiset $a^n$ such that 
+$a^n \in L^{\circ}(E_1)$ where $E_1=E$. This is almost the exact scenario when spiking rule $R$ can
+be applied. i.e. $a^n \in L(E)$. The difference is that the regular expression $E_1$ of interaction
+rule $R_1$ is over the alphabet $V=\{a,x,r_1,...,r_f\}$ and has a specific form specified in Section 
+\ref{sec-preliminaries} while the regular expression $E$ of spiking rule $R$ is over the alphabet 
+$O=\{a\}$. The regular expression $E_1$ specifies that which  spike counts will make rule $R_1$
+eligible but it also specifies that there should not be any delay symbol $x$ nor rule symbols
+$r_1,...,r_f$ for the rule to be eligible. For example, if an interaction rule uses the control
+language $L^{\circ}((a^2)^+) = \{a^2,a^4,a^6,...\}$, the rule is only eligible if there is an even
+number of spikes and there are no $x,r_1,...,r_p$ symbols in cell/neuron $i$. It is not sufficient
+to check only the number of spikes. The lack of delay and rule symbols means that the neuron/cell
+is open and there are no active rules. When interaction rule $R_1$ is applied at time $t$, it will 
+consume the multiset $a^c$ in neuron $i$ and it will produce multiset $x^{d-1}r$ in the same neuron
+at time $t$. Symbol $r \in \{r_1,...,r_f\}$ is the symbol associated with spiking rule $R$ so it is
+one of the symbols produced by the interaction rule $R_1$ that is associated with rule spiking rule
+$R$. The presence of delay symbols $x$ means neuron $i$ is now closed while the presence of rule
+symbol $r$ means there is an active rule in neuron $i$.
+
+Interaction rule $R_2$ simulates the delay countdown. Rule $R_2$ has a single eligibility condition,
+the presence of at least one delay symbol $x$ in neuron $i$. It does not care about the spike count
+nor the presence or absence of rule symbols $r_1,...,r_f$. This single condition is specified by the 
+rule's regular expression $E_2 = a^*|x^+|r_1^*|\cdots|r_f^*$. When applied, interaction rule $R_2$ 
+consumes a single delay symbol $x$ from neuron $i$ but does not produce any new symbols.
+
+If interaction rule $R_1$ is applied at time $t$ and neuron $i$ has the multiset $a^n$, after rule
+application neuron $i$ will now have the multiset $a^{n-c}x^{d-1}r$. From time $t+1$ to $t+d-1$, 
+there will be at least one delay symbol $x$ in neuron $i$ which means interaction rule $R_2$ will be 
+used in that time period. At time $t+d$, the multiset in neuron $i$ is $a^{n-c}r$. There are no more 
+delay symbols $x$. There are only spike symbols and the single rule symbol $r$. Interaction rule 
+$R_3$ that is associated with spiking rule $R$ is applied at time $t+d$. Regular expression
+$E_3=a^*|r$ specifies that rule $R_3$ is eligible if the rule symbol $r$ is in neuron $i$ and there
+are no other rule symbols nor delay symbols in the neuron. It does not care about the spike count.
+When rule $R_3$ is applied at time $t$, rule symbol $r$ is consumed from neuron $i$ and $p$ spikes
+are produced in each neuron $j \in \{j_1,...,j_k\}$ adjacent to neuron $i$.
+
+Figure \ref{fig-delay-tab} shows the rules used by neuron $i$ in time $t$ to $t+d$ and the multiset 
+in the neuron before and after the rule is applied.
+
+\begin{figure}[H]
+\begin{center}
+\begin{tabular}{|l|l|c|l|}
+\hline
+\thead{Time}     & \thead{Multiset \\ (Before Rule Application)} & \thead{Rule} &\thead{Multiset\\(After Rule Application)}    \\ \hline
+$t+0$    & $a^n$             & $R_1$ & $a^{n-c}x^{d-1}r$   \\ \hline
+$t+1$    & $a^{n-c}x^{d-1}r$ & $R_2$ & $a^{n-c}x^{d-1}r$   \\ \hline
+$...$    & $...$             & $R_2$ & $...$              \\ \hline
+$t+d-2$  & $a^{n-c}x^{2}r$   & $R_2$ & $a^{n-c}x^{1}r$    \\ \hline
+$t+d-1$  & $a^{n-c}xr$       & $R_2$ & $a^{n-c}r$         \\ \hline
+$t+d$    & $a^{n-c}r$        & $R_3$ & $a^{n-c}$          \\ \hline
+\end{tabular}
+\end{center}
+\caption{Multiset in Neuron $i$  Before and After an Interaction Rule is Applied (From Time $t$ to 
+$t+d$)}
+\label{fig-delay-tab}
+\end{figure}
+
+For each spiking rule $R$, there are corresponding interaction rules $R_1$ and $R_3$. For example, 
+if there are two spiking rules with delay in a neuron, rules $R_u$ and $R_v$, then spiking rule $R_u$
+will have the corresponding interaction rule $R_{u,1}$ that has the form of interaction rule $R_1$ and
+interaction rule $R_{u,3}$ that has the form of interaction rule $R_3$ while spiking rule $R_v$
+will have interaction rules $R_{v,1}$ and $R_{v,3}$. The neuron will only have a single interaction
+rule $R_2$ since this rule is not specific to a single spiking rule. To simulate the behavior of
+the spiking rule $R_u$, interaction rules $R_{u,1}$, $R_2$, and $R_{u,3}$ are used and to simulate
+the behavior of spiking rule $R_v$, interaction rules $R_{v,1}$, $R_2$, and $R_{v,3}$ are used.
+The delay of the spiking rule is encoded in interaction rule $R_1$ while the action (number of
+spikes produces) is encoded in interaction rule $R_3$. Interaction rule $R_2$ is used to implement
+the delay countdown mechanism used by all spiking rules with delay.
+
+The \emph{prevention of rule application} behavior is implemented in interaction rule $R_1$. 
 
 %===================================================================================================
 
