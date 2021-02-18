@@ -10,6 +10,7 @@
 \usepackage{float}               % for [H] options in the figure environment
 \usepackage{tikz}                % for tikzpicture
 \usetikzlibrary{positioning}     % for tikz's relative positioning
+\usetikzlibrary{shapes.misc}     % for tikz's relative positioning
 \usepackage{makecell}            % for \thread 
 
 \renewcommand\theadfont{\bfseries}
@@ -718,18 +719,82 @@ $$\Pi'= ((n,O,W=(w_1,...,w_n),c_{in}=\emptyset, c_{out}=\{i_o\}, R),\delta=min)
 $$\Pi'= ((n,O,W=(w_1,...,w_n), c_{in}=\{i_o\}, c_{out}=\emptyset, R),\delta=min) 
 \text{ where } w_i = a^{n_i} \text{ (in accepting mode)}$$ 
 
-
-
 %===================================================================================================
 
-\subsection{SNP System Models with More General Rules}
+\subsection{Spiking Rules as Interaction Rules}
 
-\noindent \textbf{SNP Systems with  Extended Spiking Rule} \cite{chen-2008-snp-e}
-$$E/a^c \ra a^p$$
+This section looks at how different spiking rules from different SNP system variants can be written 
+as interaction rules. Different SNP system variants that are very similar to each other when one
+looks at them as network of cells. As networks of cells, they all have the same components (i.e. 
+same alphabet, same configuration, same input/output functions, same derivation mode, etc). The only 
+difference is the form of the interaction rules that they use. The different versions of spiking 
+rules used by the different SNP system variants in this section are simply restricted versions of an 
+interaction rule, interaction rules with specific forms. This is not always the case since there are
+spiking rule variants that can not be written as one interaction rule. The original spiking rule 
+with delay is a simple example. We will only deal with non-delayed version of the different spiking 
+rule variants in this section.
+
+An SNP system variant in \cite{chen-2008-snp-e} has a spiking rule of the form $E/a^c \ra a^p$. This 
+rule called an \emph{extended spiking rule}. The extended spiking rule is a generalization of the 
+original spiking rule. In an extended spiking rule, one can specify the number of spikes to be sent
+out to adjacent neurons. This is specified by the multiset $a^p$ ($p$ spikes are sent out). If the
+spiking rule is in neuron $i$ and there are synapses from neuron $i$ to neurons $j_1,...,j_k$ (see
+Figure \ref{fig-snp}), then its corresponding interaction rule is: 
 $${[L^{\circ}(E)]}_i\ts/\ts {[a^c]}_i \ra {[a^p]}_{j_1} \cdots {[a^p]}_{j_k}$$
 
-\noindent \textbf{SNP Systems with Weighted Synapses} \cite{pan-2012-weighted-synapses}
-$${[L^{\circ}(E)]}_i\ts/\ts {[a^c]}_i \ra {[a^{p \cdot w_{j_1}}]}_{j_1} \cdots {[a^{p\cdot w_{j_k}}]}_{j_k}$$
+
+A variant called \emph{SNP systems with weighted synapses} \cite{pan-2012-weighted-synapses} has the
+additional feature having positive integer weights on its synapses. A spike sent through a synapse 
+with weight $w$ will arrive as $w$ spikes at the target neuron. The spiking rule in this variant 
+has the same form as an extended spiking rule, $E/a^c \ra a^p$. If the rule is activated, the neuron
+will send out $p$ spikes through its outgoing synapses. The weight of the synapse will be a
+multiplier and the $p$ spikes sent through a synapse with weight $w$ will arrive at the target 
+neuron as $p\cdot w$ spikes. If a spiking rule $E/a^c \ra a^p$ is in neuron $i$ and neuron $i$ is 
+connected to neurons $j_1,...,j_k$ where the weight of synapse $(i,j_q)$ is $w_q$ ($1 \leq q \leq 
+k$), see Figure \ref{fig-snp2}, then its corresponding interaction rule is:
+
+$${[L^{\circ}(E)]}_i\ts/\ts {[a^c]}_i \ra {[a^{p \cdot w_{1}}]}_{j_1} \cdots 
+{[a^{p\cdot w_{q}}]}_{j_q} \cdots {[a^{p\cdot w_{k}}]}_{j_k}$$
+
+\begin{figure}[H]
+\begin{center}                                                                                           
+\begin{tikzpicture}
+[
+scale=1.0,
+neuron-a/.style={circle,draw,minimum size = 07mm},
+text-a/.style={black},
+]
+\node (n1) [neuron-a] at (0,0) {$ $};
+\node (l1) [text-a,   left  = 00mm of n1]              {$i$};
+\node (n2) [neuron-a, right = 20mm of n1]              {$ $};
+\node (l2) [text-a,   right = 00mm of n2]              {$j_q$};
+\node (d1) [text-a,   above = 03mm of n2, rotate =90]  {$...$};
+\node (n3) [neuron-a, above = 06mm of n2]              {$ $};
+\node (l3) [text-a,   right = 00mm of n3]              {$j_1$};
+\node (d2) [text-a,   below = 03mm of n2, rotate =270] {$...$};
+\node (n4) [neuron-a, below = 06mm of n2]              {$ $};
+\node (l4) [text-a,   right = 00mm of n4]              {$j_k$};
+\draw [->] (n1) -- (n2) node[midway, below] {$w_q$};
+\draw [->] (n1) -- (n3) node[midway, below] {$w_1$};
+\draw [->] (n1) -- (n4) node[midway, below] {$w_k$};
+\end{tikzpicture}                                                                                        
+\end{center}                                                                                             
+\caption{Neuron $i$ and Adjacent Neurons $j_1,...j_k$}\label{fig-snp2}
+\end{figure} 
+
+
+A variant called \emph{SNP systems with multiple channels} \cite{peng-2017-multiple-channels} adds 
+the idea of \emph{synapse labels} to the original SNP system. This SNP system variants has a set of
+labels and each synapse in the system is labeled. The spiking rule in this variant has the form
+$E/a^c \ra a: (l)$ where the $l$ is a synapse label. If the spiking rule is in neuron $i$ and neuron
+$i$ is connected to neurons $j_1,...,j_k$, when the rule $E/a^c \ra a^p (l)$ is activated it will
+consume $c$ spikes in neuron $i$ and will send $p$ spikes through synapses labeled $l$. No spikes
+will  be transmitted through out-going synapses with label that is not labeled $l$. Let 
+${j'_1,...,j'_q}$ be a subset of ${j_1,...,j_k}$ such that neurons $j'_1,...,j'_q$ are connected to
+neuron $i$ via synapses labeled $l$ (i.e. synapses $(i, j'_1),...,(i,j'_q)$ are all labeled as $l$).
+Then the spiking rule's corresponding interaction rule is:
+
+$${[L^{\circ}(E)]}_{i}\ts/\ts {[a^c]}_i \ra {[a^p]}_{j'_1}...{[a^p]}_{j'_{q}}$$
 
 \begin{figure}[H]
 \begin{center}                                                                                           
@@ -749,17 +814,13 @@ text-a/.style={black},
 \node (d2) [text-a,   below = 03mm of n2, rotate =270] {$...$};
 \node (n4) [neuron-a, below = 06mm of n2]              {$ $};
 \node (l4) [text-a,   right = 00mm of n4]              {$j_k$};
-\draw [->] (n1) -- (n2) node[midway, below] {$w_1$};
-\draw [->] (n1) -- (n3) node[midway, below] {$w$};
-\draw [->] (n1) -- (n4) node[midway, below] {$w_k$};
+\draw [->] (n1) -- (n2) node[midway, below] {$l$};
+\draw [->] (n1) -- (n3) node[midway, below] {$l$};
+\draw [->] (n1) -- (n4) node[midway, below] {$l'$};
 \end{tikzpicture}                                                                                        
 \end{center}                                                                                             
 \caption{Neuron $i$ and Adjacent Neurons $j_1,...j_k$}\label{fig-snp2}
 \end{figure} 
-
-\noindent \textbf{SNP Systems with Multiple Channels} \cite{peng-2017-multiple-channels}
-$$E/a^c \ra a^p\ts (l)$$
-$${[L^{\circ}(E)]}_{i}\ts/\ts {[a^c]}_i \ra {[a^p]}_{j'_1}...{[a^p]}_{j'_{k'}}$$
 
 %===================================================================================================
 
@@ -873,9 +934,9 @@ $t+d$)}
 \end{figure}
 
 For each spiking rule $R$, there are corresponding interaction rules $R_1$ and $R_3$. For example, 
-if there are two spiking rules with delay in a neuron, rules $R_u$ and $R_v$, then spiking rule $R_u$
-will have the corresponding interaction rule $R_{u,1}$ that has the form of interaction rule $R_1$ and
-interaction rule $R_{u,3}$ that has the form of interaction rule $R_3$ while spiking rule $R_v$
+if there are two spiking rules with delay in a neuron, rules $R_u$ and $R_v$, then spiking rule 
+$R_u$ will have the corresponding interaction rule $R_{u,1}$ that has the form of interaction rule 
+$R_1$ and interaction rule $R_{u,3}$ that has the form of interaction rule $R_3$ while spiking rule $R_v$
 will have interaction rules $R_{v,1}$ and $R_{v,3}$. The neuron will only have a single interaction
 rule $R_2$ since this rule is not specific to a single spiking rule. To simulate the behavior of
 the spiking rule $R_u$, interaction rules $R_{u,1}$, $R_2$, and $R_{u,3}$ are used and to simulate
@@ -884,8 +945,151 @@ The delay of the spiking rule is encoded in interaction rule $R_1$ while the act
 spikes produces) is encoded in interaction rule $R_3$. Interaction rule $R_2$ is used to implement
 the delay countdown mechanism used by all spiking rules with delay.
 
-The \emph{prevention of rule application} behavior is implemented using interaction rule $R_1$. Rule
-$R_1$.     
+The \emph{prevention of rule application} behavior is implemented using interaction rule $R_1$ (is 
+not eligible if there are rule symbols in the neuron) while the \emph{spiking delay} behavior is 
+implemented using all three interaction rules $R_1$ (produces delay objects), $R_2$ (countdown
+mechanism), $R_3$ (actual spike production). Interaction rule $R_1$ produces delay symbols in the 
+neuron that indicate that the neuron is closed but there are no mechanisms preventing other neurons
+from sending spikes. For example, if there is a synapse from neuron $h$ to neuron $i$, $R_3$ 
+interaction rules in neuron $h$ should be modified such that they will not produce spikes in neuron
+$i$ if neuron $i$ is closed. Let $R_3:\ts [L^{\circ}(E_3)]_h / [r]_h  \ra \cdots[a^p]_{i}\cdots$ be
+an interaction rule in neuron $h$. The rule produces the multiset $a^p$ in neuron $i$ as specified
+by ${[a^p]}_{i}$ on the right of the arrow. Interaction rule $R_3$ has to be modified in such a
+way as to not send the multiset $a^p$ to neuron $i$ if neuron $i$ is closed or is about to close.
+Neuron $i$ is closed if there is at least one delay symbol $x$ in the neuron and neuron $i$ is about 
+to close if there are no delay symbols in the neuron but there is at least one rule with delay in 
+neuron $i$ that is eligible. Interaction rule $R_3$ will have to check the multiset in neuron $i$
+to see if there are any delay symbols in the neuron or to see if the multiset in neuron $i$ makes
+rules with delay in neuron $i$ eligible. For simplicity, we will call a neuron \emph{closed} if it 
+is actually closed (neuron with delay symbols) or if it is about to close (with eligible rules with
+delay). Interaction rule $R_3$ will be modified to include a control language that is associated 
+with neuron $i$. i.e. Interaction rule $R_3$ will have the form 
+${[L^{\circ}(E_3)]}_h{[L^{\circ}(E_i)]}_i/{[r]}_h\ra \cdots {[a^p]}_i \cdots$. The control language
+$L^{\circ}(E_i)$ contains all multisets that signify that neuron $i$ is open. The regular expression
+$E_i$ specifies multisets that do not contain delay symbol $x$ and do not contains spike counts that
+will make a rule with delay in neuron $i$ to be eligible. 
+
+We look at an SNP subsystem in Figure \ref{fig-snp3} for a specific example. For now, our concern is
+translating the spiking rule $r_u: a^7/a^7 \ra a^3: 6$ in neuron $h$ to a set of interaction rules. 
+At most, there are two rules with delay in a neuron so the alphabet for the corresponding network of
+cells is $V=\{a,x,r_1,r_2\}$. We will use the rule symbol $r_1$ for spiking rule $r_u$ in neuron 
+$h$. 
+
+\begin{figure}[H]
+\begin{center}                                                                                           
+\begin{tikzpicture}
+[
+scale=1.0,
+neuron-a/.style={rounded rectangle,draw,minimum size = 07mm},
+text-a/.style={black},
+]
+\node (nh) [neuron-a, text width = 30mm] at (0,0)       {$r_u: a^7/a^7 \ra  a^3: 6$ \\
+                                                         $r_v: a^2/a^2 \ra a^2:  9$};
+\node (l1) [text-a,   left  = 00mm of nh]               {$h$};
+\node (ni) [neuron-a, above right= 05mm and 20mm of nh,text width=30mm] {$a^3(a^3)^*/a^3 \ra a:3$ \\  
+                                                                         $a^5(a^5)^*/a^5 \ra a:5$ \\
+                                                                         $a/a \ra a:0$};
+\node (li) [text-a,   right  = 00mm of ni]              {$i$};
+\node (nj) [neuron-a, below right= 05mm and 20mm of nh] {$a/a \ra a:0$};
+\node (lj) [text-a,   right  = 00mm of nj]              {$j$};
+\draw [->] (nh) -- (ni) node[midway] {$ $};
+\draw [->] (nh) -- (nj) node[midway, below] {$ $};
+\end{tikzpicture}                                                                                        
+\end{center}                                                                                             
+\caption{Example SNP System}\label{fig-snp3}
+\end{figure} 
+
+Initially, spiking rule $r_u: a^7/a^7 \ra a^3:6$ will have the corresponding interaction rules:
+
+\begin{itemize}
+\item $R_{u,1}:\ts [L^{\circ}(a^7)]_h / [a^7]_h \ra [x^{5}r_1]_h$ 
+\item $R_{u,2}:\ts [L^{\circ}(a^*|x^+|r_1^*|r_2^*)]_h / [x]_h \ra \emptyset_n$
+\item $R_{u,3}:\ts [L^{\circ}(a^*|r_1)]_h / [r_1]_h \ra [a^3]_{i}[a^3]_{j}$
+\end{itemize}
+
+Interaction rule $R_{u,1}$ only activates if there is exactly $7$ spikes in neuron $h$ and there
+are no delay or rule symbols. When applied, say at time $t$, interaction rule $R_{u,1}$, consumes 
+$7$ spikes and produces the multiset $x^5r_1$ in neuron $h$. Multiset $x^5$ represents $5$ 
+additional time steps (time $t+1$ to $t+5$) when neuron $h$ is closed (excluding the current time 
+step $t$). The rule symbol $r_1$ represents spiking rule $r_u$ being active. Interaction rule 
+$R_{u,2}$  will be applied as long as there are still delay symbols in neuron $h$. Interaction rule 
+$R_{u,2}$ only consumes a single delay symbol $x$ per step and it will be used for 5 steps (at time 
+$t+1$ to $t+5$). In total, neuron $h$ is closed for 6 steps at time $t$ to $t+5$. At time $t+6$, 
+there will be no more delay symbols but the rule symbol $r_1$ is still in neuron $h$ which means 
+interaction rule $R_{u,3}$ will be applied consuming rule symbol $r_1$ in neuron $h$ and producing 
+the multiset $a^3$ in both neuron $i$ and neuron $j$.
+
+Interaction rule $R_{u,3} $always produces spikes in neuron $j$. This should not be the case for
+neuron $i$.Neuron $i$ contains spiking rules with delay which means interaction rule $R_{u,3}$ 
+should check if neuron $i$ is closed or open and only produce spikes in neuron $i$ if neuron $i$ is
+open. Two versions of interaction rule $R_{u,3}$ should be in neuron $h$, a version that checks if 
+neuron $i$ is open and sends spikes to both neuron $i$ and neuron $j$ (we denote this rule as 
+$R_{u,3}$) and a version that checks if neuron $i$ is closed and sends spikes only to neuron $j$ 
+(we denote this rule as $\overline{R}_{u,3}$). Interaction rules $R_{u,3}$ and $\overline{R}_{u,3}$ 
+are the following:
+
+\begin{itemize}
+\item $R_{u,3}:\ts {[L^{\circ}(a^*|r_1)]}_h {[L^{\circ}(E_i)]}_i / {[r_1]}_h \ra {[a^3]}_{i}{[a^3]}_{j}$
+\item $\overline{R}_{u,3}:\ts {[L^{\circ}(a^*|r_1)]}_h {[L^{\circ}(E'_i)]}_i/ {[r_1]}_h \ra {[a^3]}_{j}$
+\item where $E'_i =  a^*| x^+ | r_1^* | r_2^* \cup a^3(a^3)^* \cup a^5(a^5)^*$
+\end{itemize}
+
+Interaction rule $\overline{R}_{u,3}$ uses the control language $L^{\circ}(E'_i)$. The regular 
+expression $E'_i$ specifies the set of multisets that signify that neuron $i$ is closed. Regular 
+expression $E'_i$ is composed of three sub-expressions connected by the union operator $\cup$. The
+sub-expression $a^*|x^+|r_1^*|r_2^*$ represents the multisets that contain at least one delay symbol
+$x$ which means neuron $i$ is closed. The sub-expressions $a^3(a^3)^*$ and $a^5(a^5)^*$ are the 
+regular expressions of spiking rules with delay in neuron $i$. If neuron $i$ contains a multiset
+that is specified by either $a^3(a^3)^*$ or $a^5(a^5)^*$, then neuron $i$ is about to close. By
+combining the three sub-expressions using the union operator, the resulting expression $E'_i$ 
+specifies all multisets that make neuron $i$ a closed neuron. When activated, interaction rule 
+$\overline{R}_{u,3}$ only produces the multiset $a^3$ in neuron $j$.
+
+Interaction rule $R_{u,3}$ uses the complementary control language $L^{\circ}(E_i)$. If regular
+expression $E'_i$ specifies multisets where neuron $i$ is closed, regular expression $E_i$ specifies
+multisets where neuron $i$ is open. When activated, interaction rule $R_{u,3}$ produces the multiset
+$a^3$ in both neuron $i$ and neuron $j$.
+
+In general, if neuron $h$ is connected to $q$ neurons with spiking rules with delay, then for a 
+spiking rule $r_{u}$ in neuron $h$ the corresponding set of interaction rules contains the rules
+$R_{u,1}$, $R_{u,2}$ and $2^q$ versions of $R_{u,3}$. For example, if neuron $h$ is connected to two
+neurons ($q=2$) both with spiking rules with delay, say neuron $a$ and neuron $b$, then the spiking
+rule $r_u$ will have $2^q = 2^2 = 4$ versions of interaction rule $R_{u,3}$, one for each of the 
+following cases:
+
+\begin{itemize}
+\item $R_{u,3}$ for the case when both neuron $a$ and neuron $b$ are closed.
+\item $R_{u,3}$ for the case when neuron $a$ is closed and neuron $b$ is open.
+\item $R_{u,3}$ for the case when neuron $a$ is open and neuron $b$ is closed.
+\item $R_{u,3}$ for the case when both neuron $a$ and neuron $b$ are open.
+\end{itemize}
+
+In summary, in order to simulate the behavior (delay spiking, prevention of rule application,
+closing of neuron) a spiking rule $r_u$, additional symbols and three types of interaction rules 
+should be created, interaction rules $R_1$, $R_2$, $R_3$. For spiking rule $r_u$, the $R_1$ 
+interaction rule is denoted by $R_{u,1}$, the $R_2$ interaction rule is denoted by $R_{u,2}$, and
+the $R_3$ interaction rule is denoted by $R_{u,3}$. Interaction rule $R_{u,1}$ contains the 
+information about spiking rule $r_u$'s regular expression, delay and the number of spikes it 
+consumes. Interaction rule $R_{u,3}$ contains the information about spiking rule $r_u$'s action
+(the number of spikes it produces and the target neurons). Interaction rule $R_{u,2}$ is used for
+the delay countdown mechanism and does not contain information particular to spiking rule $r_u$ 
+which means it can be reused by other spiking rules with delay in the same neuron. i.e. If a neuron
+has two spiking rules with delay, $r_u$ and $r_v$, their corresponding $R_2$ interaction rules
+$R_{u,2}$ and $R_{v,2}$ is the same interaction rule. If the target neurons in $R_{u,3}$ can close,
+then multiple versions of $R_{u,3}$ should be created for the different scenarios where some of the
+targets neurons are closed while some target neurons are open.
+
+%===================================================================================================
+
+\subsection{}
+
+
+%===================================================================================================
+
+
+\section{Discussion}
+
+
 
 %===================================================================================================
 
