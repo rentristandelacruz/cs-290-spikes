@@ -251,7 +251,14 @@ cells. Standards SNP system's rules are translated as interaction rules. The aut
 \cite{chen-2008-snp-e,pan-2012-weighted-synapses,alhazov-2006-esnp,peng-2017-multiple-channels,pan-2012-astrocytes} 
 as interaction rules.  
 
-ADD RESULTS AND SUMMARY HERE
+Section \ref{sec-preliminaries}
+Section \ref{sec-ff}
+Section \ref{sec-snp}
+Section \ref{sec-representation}
+Section \ref{sec-delay}
+Section \ref{sec-implementation}
+Section \ref{sec-others}
+Section \ref{sec-discussion}
 
 % ================================================================================================= %
 
@@ -1282,7 +1289,7 @@ might be impossible or at least very difficult to implement.
 %===================================================================================================
 
 
-\section{Discussion}
+\section{Discussion}\label{sec-discussion}
 
 In Section \ref{sec-snp}, we used the formal framework to look at different SNP system models and
 their features. We roughly categorize the features into three categories: (1) features that can be
@@ -1324,24 +1331,37 @@ some ideas on how to implement the following features: (1) spiking rules in exte
 SNP systems with astrocytes, and (4) group spiking strategy and synapse closing mechanism for SNP
 systems with rules on synapse. The features were implemented in the formal framework by using 
 additional symbols, creating additional interaction rules and/or combining different spiking rules
-into one interaction rule. It is particularly helpful that an interaction rule's scope is global.
-i.e. An interaction rule can look at any neuron/cell and can consume and produce multisets in any
-cell/neuron. Some SNP systems' configuration is defined by the multiset contents of each neuron and
-possibly some internal states of the neurons. For example, a configuration in the original SNP system
-is defined by the multisets of spikes in each neuron and a delay status (counter) that determines if 
-a neuron is closed or open. We have shown in Section \ref{snp-delay} that this delay status can be
-implemented using an additional symbol called the delay symbol. In this implementation, a new symbol
-is used to represent some internal neuron/cell state. 
+into one interaction rule, and creating additional neurons/cells. Some SNP systems' configuration is 
+defined by the multiset contents of each neuron and possibly some internal states of the neurons. 
+For example, a configuration in the original SNP system is defined by the multisets of spikes in 
+each neuron and a delay status (counter) that determines if a neuron is closed or open. We have 
+shown in Section \ref{sec-delay} that this delay status can be implemented using an additional 
+symbol called the delay symbol. In this implementation, a new symbol is used to represent some 
+internal neuron/cell state. Additional symbols can also encode local network topology. This is 
+shown in the idea for the implementation of plasticity rules. Plasticity rules can create and 
+destroy synapses. The presence or absence of a synapse from neuron $x$ to neuron $y$ is represented 
+by the presence or absence of a new symbol that correspond for the synapse $(x,y)$.
 
-In Section \ref{sec-others}
+It is particularly helpful that an interaction rule's scope is global. i.e. An interaction rule can 
+look at any neuron/cell and can consume and produce multisets in any cell/neuron. In the 
+implementation of the spiking rule with delay, there is a type of interaction rule ($R_3$ rules in
+Section \ref{sec-delay}) that produces spikes to a set of target neurons. This type of rule needs
+to check the neuron it is associated with and it needs to check the target neurons to see if they
+are open or closed. Since interaction rules are global, checking the multisets of any neuron is 
+possible making the $R_3$ types of interaction rule feasible. In general, the global scope of the
+interaction rule allows us to create a single interaction rule that  combines behaviors of different 
+spiking rules that are in different partitions i.e. behaviors of spiking rules from different 
+neurons or different synapses. You can see an example of this in the implementation of spiking
+rules on synapses.
 
-On implementation features of SNP system models
-Discussion if the formal framework should be extended and what features should be added
-to the framework.
+If new symbols and new interaction rules are not enough. We can also create additional cells/neurons
+in order to implement a feature. This is done when implementing the spike transmission delay of
+spiking rules in the extended SNP systems. A chain of neurons are used to simulate the spike
+transmission delay.
 
-\section{Conclusions}
+In Section \ref{sec-others}, we look at features that are impossible/impractical or seemingly very
+difficult to implement.
 
-fsdj
 
 %===================================================================================================
 
@@ -1350,7 +1370,7 @@ fsdj
 \section*{Appendices}\label{app}
 \section{Derivation Modes}\label{app-derivation}
 
-\cite{freund-2007-ff-1}
+Common derivation modes from \cite{freund-2007-ff-1}.
 
 \begin{itemize}                                                                                       
    \item $Applicable(\Pi, C, \delta) \subseteq Applicable(\Pi, C)$ - Set of applicable multisets of 
@@ -1383,9 +1403,11 @@ fsdj
 \section{Halting Conditions}\label{app-halt}
 
 \begin{enumerate}
-\item Total Halting
-\item Adult Halting
-\item Partial Halting 
+\item Total Halting: There are no more applicable multisets of rules in the entire system. 
+\item Adult Halting: There are still applicable multisets of rules but all of the applicable 
+      multisets lead back to the current configuration when applied to the system.
+\item Partial Halting: Rules are divided into disjoint partitions. If there are no more applicable
+      multisets of rules that contain at least on rule per partition, then the system halts.
 \end{enumerate}
 
 %===================================================================================================
