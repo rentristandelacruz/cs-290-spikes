@@ -721,7 +721,7 @@ $$\Pi'= ((n,O,W=(w_1,...,w_n), c_{in}=\{i_o\}, c_{out}=\emptyset, R),\delta=min)
 
 %===================================================================================================
 
-\subsection{Spiking Rules as Interaction Rules}
+\subsection{Spiking Rules as Interaction Rules} \label{sec-representation}
 
 This section looks at how different spiking rules from different SNP system variants can be written 
 as interaction rules. Different SNP system variants that are very similar to each other when one
@@ -824,7 +824,7 @@ text-a/.style={black},
 
 %===================================================================================================
 
-\subsection{Spiking Rules with Delays}
+\subsection{Spiking Rules with Delays}\label{sec-delay}
 
 An $n$-degree SNP system whose spiking rules have no delay ($d =0$) can be represented by a network 
 of cell from the family $NC(n,\{a\}, REG^{\circ}, min)$. This section shows that $n$-degree SNP 
@@ -1081,27 +1081,267 @@ targets neurons are closed while some target neurons are open.
 
 %===================================================================================================
 
-\subsection{Implementable Features of SNP System Models}
+\subsection{Implementable Features of SNP System Models}\label{sec-implementation}
 
-\emph{spiking neural p systems with rules on synapse (RSSNP system)}
-\emph{spiking neural P systems with astrocyte-like control}
-\emph{spiking neural P systems with anti-spikes}
-\emph{spiking neural p system with structural plasticity}
+In Section \ref{sec-delay}, we showed there is a feature (spiking rule delay) that is not an
+inherent part of the formal framework but can be `implemented' using constructs (additional symbols,
+set of interaction rules) in the framework. This section will look at different SNP system models
+with features that are not part of the framework but can be implemented in the framework. This 
+section will give some ideas on how those different features can be implemented in the framework.
+
+
+An SNP system variant called \emph{extended SNP system} \cite{alhazov-2006-esnp} was introduced in
+2006 as an extension of the original SNP system. Its spiking rule has the form $(i, E/a^k \ra P;d)$ 
+where $i$ specifies the neuron that contains the rule, $E$ is a regular expression over $\{a\}$ that
+defines \emph{checking set}, $a^k$ is the multiset consumed by the rule, $d \geq 0$ is the 
+spiking delay, and $P$ is the set of \emph{productions} of the from $(j, w, t)$ where $j$ is the 
+target neuron, $w \in {a}^*$ is the multiset produced, and $t \geq 0$ is the \emph{transmission 
+time} (the time it will take for the multiset $w$ to arrived at neuron $j$). If both spiking delay
+and spike transmission time are zero, then a spiking rule for extended SNP systems can be written as
+a single formal framework interaction rule. As shown in the previous section, the spiking delay
+mechanism can be implemented in the formal framework. The transmission times can be implemented by
+creating chains of neurons whose function is simply to delay the spike transmission. For example,
+the rule $(i, E/a^k \ra \{(j,a^p, 7)\}:d)$ has a single production that sends multiset $a^p$ from
+neuron $i$ to neuron $j$ with transmission time of $7$ steps. A chain of 7 neurons will be 
+created. This chain will eventually lead to neuron $j$ (the target neuron in the production). After 
+rule activation and the delay, the corresponding interaction rule will send the multiset $a^p$ to the 
+first neuron in the chain. The only rule in the neurons of the chain is an interaction rule that 
+will forward the multiset $a^p$ to the next neuron. Multiset $a^p$ should arrive at neuron $j$ after
+$7$ steps (the transmission time).
+
+\emph{SNP system with structural plasticity} \cite{cabarle-2015-structural-plasticity} is an SNP
+system variant that has new types of rule called \emph{plasticity rules}. Plasticity rules are used
+to create or destroy synapses. A plasticity rule has the form $E/a^c \ra \alpha k(N)$ where $E$ is
+a regular expression over $\{a\}$ that defines the checking set, $a^c$ is the multiset consumed by
+the rule, $\alpha \in \{-,+,\pm, \mp\}$ is the action (destruction, creation,
+creation-then-destruction, destruction-then-creation) of the rule, $k$ is the number of synapses to
+be created or destroyed, and $N$ is a set of target neurons. For example, if the  rule 
+$E/a^c \ra +3(\{1,7,9,10\})$ is in neuron $2$ and is activated, then the rule will try to create $3$ 
+synapses that start from neuron $2$ and terminate at $3$ neurons from the set $\{1,7,9,10\}$. This
+variant also has a spiking rule with the same form as the original SNP system's spiking rule but 
+without delay. The activation of a plasticity rule at time $t_0$ will change the effect of the 
+activation of a spiking rule in the same neuron at time $t > t_0$. For example, if a plasticity rule
+that creates synapses is activated at time $t$, spiking rules in the same neuron after
+time $t$ will now have more target neurons. The effect of the plasticity rule changes the effect of
+the spiking rules in the same neuron. In the formal framework, spiking and plasticity rules can be
+written as interaction rules. The corresponding interaction rule of a plasticity rule will use 
+additional symbols (aside from the spike symbol). The additional symbols will be consumed or 
+produced in the same neuron that contains the rule. The existence (or absence) of these symbols in a 
+neuron represents the existence (or absence) of synapses from the neuron that contains the rule to
+other neurons. The symbols represent the local topology. For example, let a system have 6 neurons,
+say neurons $1,2,3,4,5,6$. In neuron $1$, the existence of symbols $s_{2}, s_3, s_6$ means neuron 
+$1$ is connected to neurons $2,3,6$. The interaction rules for the plasticity rules can consume and 
+produce such symbols which in essence changes the topology of the system while the interaction rules
+for the spiking rules should check for presence/absence of such symbols in order to check the
+current system topology and produce the output spikes in the correct set of target (adjacent) 
+neurons.
+
+
+The variant called \emph{SNP system with astrocytes} \cite{pan-2012-astrocytes} uses a construct
+known as an \emph{astrocyte}. In the system, an astrocyte `observes' a set of synapses. Specifically,
+it observes the spikes being transmitted through those synapses. There is a threshold value (number
+of spikes) associated with an astrocyte. If an astrocyte has a threshold value of $x$ spikes, it 
+will only allow spikes to be transmitted through the synapses it is observing if the sum of the 
+number of spikes `flowing' through those synapses is not above the threshold of $x$ spikes. If the
+number of spikes being transmitted is above the astrocyte threshold, then all spikes being 
+transmitted are blocked by the astrocyte (essentially erased). The astrocyte mechanism can be 
+implemented by modifying the interaction rule version of the system's spiking rules. The astrocyte
+threshold mechanism will be built as part of the interaction rules. An interaction rule's
+scope is the entire system. i.e. An interaction rule can have a control language (checking set) for 
+any neuron in the system. To implement the astrocyte threshold mechanism, an interaction rule 
+(that corresponds to a spiking rule) should observe not only the neuron that `contains' the rule but
+also other neurons that is associated with the same astrocyte. For example, let there be four 
+neurons, neurons $w, x, y, z$, and  let there be a synapse $(w,x)$ that connects neuron $w$ to
+ neuron $x$ and a synapse $(y,z)$ that connects neuron $y$ to neuron $z$. Let there be an astrocyte 
+that observes synapses $(w,x)$ and $(y,z)$. Interaction rules in neuron $w$ will `observe' (have a 
+control language for) neuron $y$ while interaction rules in neuron $y$ will also observe neuron $w$. 
+This is done so neurons $w$ and $x$ can know if the combination of rules that they will use will 
+lead to the sum of the spikes going through synapses $(w,x)$ and $(y,z)$ exceeding the threshold or 
+not. Neurons $w$ and $y$ will activate interaction rules that do not send spikes to neurons $x,z$ if 
+the spike count produced will be above the threshold otherwise neurons $w,y$ will activate 
+interaction rules that send spikes to neurons $x,z$. Let neuron $w$ have spiking rules 
+$r_1: E_1/a^{c_1} \ra a^5$ and $r_2: E_2/a^{c_2} \ra a^3$, neuron $y$ have spiking rules 
+$r_3: E_3/a^{c_3} \ra a^7$ and $r_4: E_4/a^{c_4} \ra a$, and the astrocyte have the threshold of
+7 spikes. If rule $r_1$ and $r_3$ are used at the same time, the rules will produce a sum of $12$ spikes
+which exceeds the threshold of $7$ spikes so the astrocyte will block the $5$ spikes travelling via 
+synapse $(w,x)$ and the $7$ spikes travelling via synapse $(y,z)$. If rule $r_1$ and $r_4$ are used
+at the same time, the rules will produce the sum of $6$ spikes and the astrocyte will allow the
+$5$ spikes to travel via synapse $(w,x)$ and one spike via synapse $(y,z)$. Multiple interaction 
+rule versions of spiking rule $r_1$ should be created. One version checks the content of neuron 
+$w$ to see if the rule is eligible and it also checks the content of neuron $y$ to see if rule $r_3$
+will be used. If rule $r_3$ will be used, this version of interaction rule for $r_1$ should send 
+$5$ spikes other adjacent neurons but not to neuron $x$ since application of rules $r_1$ and $r_3$
+exceeds the threshold. Another version of the interaction rule for $r_1$ is the one that checks if
+neuron $y$ will used rule $r_4$. If rule $r_4$ will be used, this version of the interaction rule
+for $r_1$ will send $5$ spikes to all adjacent neurons including neuron $x$. The same thing applies
+for rule $r_2$, versions of interaction rules for $r_2$ should also check which rules in neuron $y$
+is eligible. On the other hand, interaction rules for rules $r_3$ and $r_4$ in neuron $y$ should 
+check which rules in neuron $w$ are eligible.
+
+In the SNP system variant called \emph{SNP systems with rules on synapse} 
+\cite{song-2014-rules-on-synapses}, spiking rules are placed on synapses instead of being inside
+neurons. Each synapse has its own set of rules. In this system, the neuron's function is primarily 
+for storing spikes. A spiking rule placed on synapse $(u,v)$ consumes spikes from neuron $u$ and
+produces spikes in neuron $v$. The spiking rules in this system has a delay component. When 
+activated, a spiking rule with delay will close a synapse instead of a neuron. The system, like 
+other SNP system variants, work in minimally parallel mode (at most 1 rule per synapse will be used).
+If two rules from two different synapses that start from the same neuron are eligible, they can only
+be activated at the same time if both the rules consume the same number of spikes. For example,
+let rule $r_1: E_1/a^{c_1} \ra a$ be in synapse $(x,y)$ and rule $r_2: E_2/a^{c_2} \ra a$ be in
+synapse $(x,z)$. Both rules consume spikes from neuron $x$. The \emph{strategy} used by this 
+system is that if both $r_1$ and $r_2$ are eligible they can both be activated when they consume the
+same number of spikes (i.e. $c_1 = c_2$). Otherwise, only one of them can be activated. The set of
+eligible rules from different synapses (with the same neuron origin) that can be activated at the 
+same time is the set that contains rules that consume the same number of spikes. The behavior of 
+SNP systems with rules on synapse can be implemented in the formal framework. Different spiking 
+rules on synapses (with the same origin neuron) can be combined into a set of interaction rules that
+will implement the behavior described above. For example, let $r_1: a^2(a^2)^*/a^3 \ra a:1$  and
+$r_2: a^3(a^3)^*/a^5 \ra a:2$ be rules on synapse $(x,y)$ and $r_3: a^4(a^4)^*/a^5 \ra a:3$ and 
+$r_4: a^5(a^5)^*/a^3 \ra a:4$ be rules on synapse $(x,z)$. Interaction rules can be created for
+each of these rules. Additionally, interaction rules that combine spiking rules that can be 
+activated together will be created. For example, rule $r_1$ and $r_4$ are both eligible when the
+spike count in neuron $x$ is a multiple of $10$ ($r_1$ is eligible when spike count is even while
+$r_4$ is eligible when the spike count is a multiple of $5$) and they can be activated at the same
+time since they both consume $3$ spikes. The interaction rules $[L(a^{10}(a^{10})^*)]_x/[a^5]_x \ra 
+[a]_y[a]_z$ corresponds to the combination of both $r_1$ and $r_2$ are activated. An interaction
+rule that corresponds to both $r_2$ and $r_2$ will also be added. We can use the idea from 
+Section \ref{sec-delay} to implement delay for synapses. The difference is that each synapse has 
+its own delay. i.e. One synapse from neuron $1$ is open, another synapse will be closed for
+3 steps, and another synapse will be closed for 5 more steps. The state of each synapse will be
+encoded as existence of delay symbols associated with the said synapse. The interaction rules 
+will also be designed to check for these synapse delay symbols. For example, the interaction rule
+that correspond to the combination or $r_1$ and $r_2$ will be modified to check for synapse 
+delay symbol in order to see the state (close/open) of synapses $(x,y)$ and $(x,z)$. 
 
 %===================================================================================================
 
-\subsection{On Other Features of SNP System Models}
+\subsection{On Other Features of SNP System Models}\label{sec-others}
 
-\emph{SNP with white hole neurons}
+This section looks at different SNP system models with features that are `impossible' to implement 
+or at least very difficult or impractical to implement in the formal framework.
+
+The SNP system variant known as \emph{SNP system with white hole neurons} \cite{song-2016-white-hole-neurons}
+has a spiking rule version called \emph{white hole spiking rule} that has the form $E/a^{all} \ra 
+a^p:d$. It has very similar behavior to the extended spiking rule except that a white hole spiking 
+rule consumes all the spikes in the neuron instead of a specified fixed number of spikes. Initially,
+it may appear that the difference between an extended spiking rule and a white hole spiking rule is
+minimal but when you take a closer look it can be argued that the white hole spiking rule is 
+significantly more powerful (in terms of computability) than the extended spiking rule. An
+extended spiking rule $E/a^c \ra a^p:d$ has a fixed `action' or effect. When activated, it 
+consumes $c$ spikes, produce $p$ spikes, and closes the neuron for $d$ steps. A white hole spiking
+rule $E/a^{all} \ra a^p:d$ has a range (infinite set) of `actions' or effects. Its action is
+dependent on the number of spikes in the neuron. For example, the white hole spiking rule
+$a^2(a^2)^*/a^{all} \ra a$ has an infinite range of possible actions since this rule can consume
+any even number of spikes greater that $0$. The only way to implement the behavior of rule
+$a^2(a^2)^*/a^{all} \ra a$ using only extended spiking rules is to have an infinite number of
+rules (one for each even number of spikes). Though the variable action of a white hole spiking
+rule is only concerned about the spike consumption, one can easily extended it and create a spiking 
+rule whose action (the number of spikes produces and the delay) varies with respect to the spike
+count in the neuron.
+
+The SNP system variant known as \emph{SNP system with weights} \cite{wang-2010-weights} deals with 
+real numbers, real number synapse weights and threshold functions. This variant is closer to spiking
+neural networks than multiset-based SNP systems (or P systems in general). Just the task of 
+representing real numbers using only discrete formal framework constructs is already a difficult and
+impractical task.
+
+An SNP system variant known as \emph{SNP systems with anti-spikes} \cite{pan-2009-anti-spikes} has
+two types of objects, the spike $a$ and the \emph{anti-spike} $\overline{a}$. Inside each neuron,
+there is a implicit rule of the form $a\overline{a} \ra \lambda$. This rule means that if there is
+a spike $a$ and an anti-spike $\overline{a}$ in the neuron, they will `annihilate' each other and
+both of them will be erased. This `annihilation' rule is applied in a maximal manner. For example,
+if a neuron started with no objects and it receives 5 spikes and 7 anti-spikes at the current step,
+there will be 5 spike-anti-spike pairs that will annihilate leaving 2 anti-spikes in the neuron for
+the next step. This means that at the beginning of each time step, inside a neuron, there is only 
+multiset of spikes or a multiset of anti-spikes and not a multiset with both spikes and anti-spikes.
+This SNP varaints has a spiking rule of the form $E/b^c \ra b'$ where $b,b' \in \{a,\overline{a}\}$ 
+and $E$ is a regular expression that is either over alphabet $\{a\}$ or over alphabet 
+$\{\overline{a}\}$. The spiking rule is eligible if (case 1) the regular expression $E$ is over $\{a\}$, 
+the neuron contains the multiset $a^n$, $a^n \in L(E)$, and the rule consumes 
+$b^c = a^c \subseteq a^n$ or if (case 2) the regular expression $E$ is over $\{\overline{a}\}$, the
+neuron contains the multiset $\overline{a}^n$, $\overline{a}^n \in L(E)$, and the rule consumes
+$b^c = \overline{a}^c \subseteq \overline{a}^n$. The rule produces the either spike ($b'= a$) or
+an anti-spike ($b'=\overline{a}$). The variant also has a forgetting rule of the form $b^c \ra 
+\lambda$ where $b \in \{a,\overline{a}\}$, a rule the simple consumes spikes or anti-spikes. For SNP 
+systems with anti-spikes, any rule (spiking, forgetting, `annihilation') can simply be written as a 
+formal framework interaction rule. The features that significantly differentiate this variant is 
+its \emph{two-phase} rule application and its unusual derivation mode that combines minimal and 
+maximal parallelism. At start of a computational step, the first phase involves each neuron checking 
+if it has eligible rules and neurons with eligible rules should activate one eligible. The first 
+phase works in minimally parallel ($min_1$) derivation mode. At most one rule is applied per neuron
+and a neuron is required to apply a rule if there is an eligible rule. At the same computational
+step, in the second phase after the spikes have already been produced, the annihilation rule is 
+applied in a maximal way in all the neurons. Essentially, the two-phase rule application will take 
+two computational steps in the formal framework. Additionally, the two-phase rule application not
+only `compresses' two computational steps in one computational step, it also uses two different 
+derivation modes one for each phase. It might be possible to implement a `hybrid' derivation mode
+that combines minimal and maximal parallelism (both derivation modes used during computation but
+only one mode is used at a given time). On the other hand, effect of the two-phase rule application 
+might be impossible or at least very difficult to implement.
 
 %===================================================================================================
 
 
 \section{Discussion}
 
+In Section \ref{sec-snp}, we used the formal framework to look at different SNP system models and
+their features. We roughly categorize the features into three categories: (1) features that can be
+directly represented in the framework, (2) features that can not be directly represented but can be
+implemented in the framework, and (3) features that impossible or very difficult to even implement
+in the framework. For brevity, we can call the features in the first category as 
+\emph{representable} features, the features in the second category as \emph{implementable} features, 
+and the features in the third category as \emph{non-implementable} features. 
+
+In Section \ref{sec-representation}, we look at some framework-representable features of some
+SNP system variants. Specifically, we look at three different versions of spiking rules from three
+different SNP system variants, the extended spiking rule, the spiking rule for SNP systems with
+(positive integer) weights, and the spiking rule for SNP systems with labeled synapses (called SNP
+systems with multiple channels). All non-delay versions of these spiking rules can be written as
+interaction rules. One spiking rule from any of those three SNP variants has a single corresponding
+interaction rule. This is what we mean by \emph{representable}. A single concept/construct (feature)
+of an SNP system variant is represented by a single concept/construct in the framework. The spiking
+rules in those systems are special cases of interaction rules. i.e. interaction rules that have
+specific forms. The only difference between a spiking rule (from those SNP systems) and its
+corresponding interaction rule is the where the information about the effect of the rule is encoded.
+A spiking rule's effect is dependent on its location (the neuron that contains the rule) and the
+topology of the network. In order to know the exact effect of the rule, you have to know the rule
+itself, it location and information about local topology. On the other hand, the corresponding 
+interaction rule already encodes all those necessary information. You can specify in an interaction
+rule which neurons to `observe', which neuron(s) to consume multisets from, and which neurons to
+send multiset to. An interaction rule induces a local topology. i.e. If an interaction rule 
+`observes' neuron $x$ and produces multisets in neurons $a$, $b$, and $c$, then it is implied that
+neuron $x$ is connected to neurons $a$, $b$, and $c$. The interaction rules can also encode 
+additional information like synapse weights and synapse labels.
+
+
+In Section \ref{sec-implementation}, we look at some framework-implementable features of some SNP
+system variants. A feature is \emph{implementable} (and not simply representable) if you have to
+construct a set or combination of different formal framework constructs and concepts in order to 
+simulate the behavior of the feature. In Section \ref{sec-delay}, we showed how a spiking rule with
+delay can be implemented in the formal framework. In Section \ref{sec-implementation}, we sketch
+some ideas on how to implement the following features: (1) spiking rules in extended SNP systems,
+(2) plasticity rules in SNP systems with structural plasticity, (3) the astrocyte mechanism in
+SNP systems with astrocytes, and (4) group spiking strategy and synapse closing mechanism for SNP
+systems with rules on synapse. The features were implemented in the formal framework by using 
+additional symbols, creating additional interaction rules and/or combining different spiking rules
+into one interaction rule. It is particularly helpful that an interaction rule's scope is global.
+i.e. An interaction rule can look at any neuron/cell and can consume and produce multisets in any
+cell/neuron. Some SNP systems' configuration is defined by the multiset contents of each neuron and
+possibly some internal states of the neurons. For example, a configuration in the original SNP system
+is defined by the multisets of spikes in each neuron and a delay status (counter) that determines if 
+a neuron is closed or open. We have shown in Section \ref{snp-delay} that this delay status can be
+implemented using an additional symbol called the delay symbol. In this implementation, a new symbol
+is used to represent some internal neuron/cell state. 
+
+In Section \ref{sec-others}
+
 On implementation features of SNP system models
 Discussion if the formal framework should be extended and what features should be added
 to the framework.
+
+\section{Conclusions}
+
+fsdj
 
 %===================================================================================================
 
