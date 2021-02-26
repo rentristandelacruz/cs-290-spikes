@@ -1320,7 +1320,6 @@ send multiset to. An interaction rule induces a local topology. i.e. If an inter
 neuron $x$ is connected to neurons $a$, $b$, and $c$. The interaction rules can also encode 
 additional information like synapse weights and synapse labels.
 
-
 In Section \ref{sec-implementation}, we look at some framework-implementable features of some SNP
 system variants. A feature is \emph{implementable} (and not simply representable) if you have to
 construct a set or combination of different formal framework constructs and concepts in order to 
@@ -1360,7 +1359,55 @@ spiking rules in the extended SNP systems. A chain of neurons are used to simula
 transmission delay.
 
 In Section \ref{sec-others}, we look at features that are impossible/impractical or seemingly very
-difficult to implement.
+difficult to implement in the formal framework. Specifically, we look at the variable action (with
+an infinite set of possible actions) of white hole spiking rules, the two-phase rule application in
+SNP systems with anti-spikes, and real number weights of SNP systems with (real) weights on 
+synapses. We can only confidently argue that the real weights feature is impossible to 
+implement. For the two-phase rule application and rules with variable action, we can only sketch 
+ideas on how to implement some aspects of these features.
+
+Formal framework constructs are made up of multisets and structures involving multisets. They are 
+discrete and finite constructs. It is really not possible to represent real numbers, e.g. real 
+number synapse weights and real number neuron potentials/charges, without involving infinity. i.e. 
+using infinite amount of objects/symbols to encode a real number. With this information, it seems 
+that the framework is not applicable for the SNP systems with real weights on synapses or in general
+any system that deals with real numbers.
+
+White hole spiking rule has a variable action. Its action is dependent on the content of a neuron. On
+the other hand, most spiking rules has a single fixed and finite set of actions. It consumes a 
+fixed number of spikes and it produces a fixed number of spikes. A white whole spiking rule produces
+a fixed number of spikes but it can consume any amount of spikes in the neuron as long as the rule 
+is activated. We can simulate the behavior of a white hole spiking rule by using an additional rule
+and by using a maximally parallel derivation mode. For example, let the white hole spiking rule be
+the rule $E/a^{all} \ra a^p$. When activated the rule will consume all spikes and produce $p$ spikes.
+Create an interaction rule, say $R_1$, that is eligible in the same scenario as the white hole 
+spiking rule and produces $p$ spikes but only consumes one spike. Create another interaction rule,
+$R_2$, that is eligible in the same scenario as the white hole spiking rule and let this new 
+interaction rule consume one spike but does not produce any spikes. When a maximally parallel 
+derivation mode is used, in the scenario that the white hole spiking rule is eligible, the two 
+interaction rules will be eligible. Maximal parallelism and interaction rule $R_2$ will make sure
+that all spikes are consumed. We can make some modifications in order to implement a policy that
+$R_1$ will always be used. i.e. The maximally parallel multiset of rules will always include 
+exactly one instance of $R_1$ and possible multiple instance of $R_2$. In the maximal parallel
+mode, interaction rules $R_1$ and $R_2$ simulates the behavior of a white hole spiking neuron. 
+
+We can use the idea of an \emph{action function} that takes the multiset in neuron as input and returns
+a set of actions (multiset to consume and multiset to produce). If we look at the action function
+of many spiking rule variants, most of them will have action functions that are piece-wise constant
+function. i.e. Let $f$ be the action function for an original spiking rule without delay and let
+$x$ be the multiset in the neuron. The set of actions of the spiking rule when the neuron contains 
+multiset $x$ is $f(x)$. The action function is piece-wise constant since $f(x)$ will be always be 
+empty if the rule in not eligible when the neuron contains  $x$ or $f(x)$ is always the fixed 
+actions $\{-a^c,a\}$ (consume $c$ spikes, produce a spike) when the rule is eligible. The white hole
+spiking rule $E/a^{all} \ra a^p$ will have the action function $f(x) = \{-a^x,a^p\}$ which is 
+`linear' with respect to the multiset $x$.
+
+The two-phase rule application in SNP system with anti-spikes seems to be quite difficult to implement
+if not impossible. The first phase runs a minimally parallel derivation mode where spiking rules are
+used, 1 rule at most per neuron. The second phase runs annihilation rules in a maximally parallel 
+manner. The system is essentially doing two computational steps at a time. 
+
+\section{Concluding Remarks}
 
 
 %===================================================================================================
