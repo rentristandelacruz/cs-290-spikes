@@ -251,14 +251,14 @@ cells. Standards SNP system's rules are translated as interaction rules. The aut
 \cite{chen-2008-snp-e,pan-2012-weighted-synapses,alhazov-2006-esnp,peng-2017-multiple-channels,pan-2012-astrocytes} 
 as interaction rules.  
 
-Section \ref{sec-preliminaries}
-Section \ref{sec-ff}
-Section \ref{sec-snp}
-Section \ref{sec-representation}
-Section \ref{sec-delay}
-Section \ref{sec-implementation}
-Section \ref{sec-others}
-Section \ref{sec-discussion}
+%Section \ref{sec-preliminaries}
+%Section \ref{sec-ff}
+%Section \ref{sec-snp}
+%Section \ref{sec-representation}
+%Section \ref{sec-delay}
+%Section \ref{sec-implementation}
+%Section \ref{sec-others}
+%Section \ref{sec-discussion}
 
 % ================================================================================================= %
 
@@ -1400,15 +1400,67 @@ multiset $x$ is $f(x)$. The action function is piece-wise constant since $f(x)$ 
 empty if the rule in not eligible when the neuron contains  $x$ or $f(x)$ is always the fixed 
 actions $\{-a^c,a\}$ (consume $c$ spikes, produce a spike) when the rule is eligible. The white hole
 spiking rule $E/a^{all} \ra a^p$ will have the action function $f(x) = \{-a^x,a^p\}$ which is 
-`linear' with respect to the multiset $x$.
+`linear' with respect to the multiset $x$. Though we have shown that white hole spiking rules can be
+simulated in the formal framework using two interaction rules and maximal parallelism derivation mode
+this does not imply that other types of rules with variable actions and different action function 
+are implementable in the formal framework.
 
 The two-phase rule application in SNP system with anti-spikes seems to be quite difficult to implement
 if not impossible. The first phase runs a minimally parallel derivation mode where spiking rules are
-used, 1 rule at most per neuron. The second phase runs annihilation rules in a maximally parallel 
-manner. The system is essentially doing two computational steps at a time. 
+used, at most one rule per neuron. The second phase runs annihilation rules in a maximally parallel 
+manner. The system is essentially doing two computational steps at a time. It is conceivable to have
+a set of interaction rules whose behavior (as a group) is to combine incoming spikes or anti-spikes
+and already perform the annihilation processes so either only a number of spikes will arrive to
+neuron or only a number of anti-spikes will arrive to a neuron. For example, let neuron $x$ be 
+connected to neuron $z$ (synapse $(x,z)$ exists) and let neuron $y$ also be connected to neuron $z$
+(synapse $(y,z)$ exists). Neuron $x$ can either send a spike, an anti-spike, or not send any symbol
+to neuron $z$. The same goes for neuron $y$. It can either send a spike, an anti-spike or no 
+object. When we combine these possibilities there are $9$ possible scenarios. e.g. (1) neurons $x,y$
+didn't send any spikes, (2) neuron $x$ sends a spike, (3) neuron $y$ sends a spike, (4) neuron $x$
+ sends an anti spikes, (5) neuron $y$ sends an anti-spikes, (6) both neurons $x$ and $y$ sends a
+spike, (7) neuron $x$ sends a spike and neuron $y$ sends an anti-spike, (8) neuron $x$ sends an
+anti-spike and neuron $y$ sends a spike,(9) neurons $x$ and $y$ both sends anti-spikes. Even though
+there are 9 scenarios, we can reduce this number by assuming annihilation can occur before the
+spikes or anti-spikes arrived at neuron $z$. Now there will only be $5$ scenarios: (1) neuron $z$
+receives 2 spikes, (2) neuron $z$ receives 1 spikes, (3) neuron $z$ receives no objects, (4) neuron
+$z$ receives 1 anti-spikes and (5) neuron $z$ receives 2 anti-spikes. Initially, we can assign 
+an interaction rule for each of these five scenarios. An interaction rules looks at neuron $x$
+and neuron $y$ to see if a specific scenario will occur. We can then add different versions of
+the interaction rules for the different scenarios related to the content of neuron $z$. For example,
+let $r_1$ be the rule for checking if neuron $z$ will receive 1 anti-spikes. If there are zero or
+more anti-spikes in neuron $z$, then rule $r_1$ will increment neuron $z$'s anti-spike count. If 
+there are zero or more spikes in neuron $z$, then rule $r_1$ will decrement neuron $z$ spike count.
+Rule $r_1$ will have two versions one for each scenario related to the content of neuron $z$. Those
+interaction rules and their different versions can simulate the second phase rule application that
+involves the annihilation of spikes and anti-spikes. You can further modify these interaction rules
+in order to take into account the consumption of objects inside neuron $z$. These modification will
+lead to a set of interaction rules that simulate the two-phase rule application behavior of SNP 
+systems with anti-spikes.
 
 \section{Concluding Remarks}
 
+We can see that many diverse features of different SNP system variants can either be represented 
+or implemented in the formal framework. But we also can see that the implementations of some of
+the features can be quite complicated some even requiring exponential number (with respect to
+the original number of rules)  of new interaction rules. As a tools for analysis, the formal 
+framework is very effective in the sense that it forces you to see features of different SNP
+system variants as sets of interaction rules. It forces you to break down different aspects of a
+feature in order to represent this small aspect of the feature as an interaction rule or as 
+new symbol. We can sort of guage the `complexity' of a feature by looking at how complex its
+implementation in the formal framework. Through the implementations of features, we were able to
+observer interesting relations between features of SNP systems. For example, we find out that it
+is sufficient to have extra rules and maximally parallel derivation mode in order to simulate
+white hole spiking neurons. As a tool for representation, the formal framework is not a good one
+since you can't represent many features (you have to implement them) of different SNP system variants.
+To have a good representation framework, many concepts and constructs have to be added to the 
+framework so different SNP system features can easily be represented. For example, if we want the
+framework to be able to represent real number components of some SNP system variants, then the 
+framework should have constructs that can easily represent these real number components. Since the
+framework is designed to a tool for analysis and not for representation, then I think it is a good
+tool for the task. If we are to modify and improve the framework, I would suggest addition of
+concepts and constructs not for representation but for analysis. For example, the action function
+that we mention in the previous section can be a good tool for classifying rules. i.e. We can
+classify different spiking rules by looking at their action functions.
 
 %===================================================================================================
 
